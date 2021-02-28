@@ -71,13 +71,27 @@ class Boid {
 			mouseVector.sub(this.pos);
 			mouseVector.normalize();
 			mouseVector.div(d * d / 10000 || 1);
-			mouseVector.limit(maxForceS.value() * (alignS.value() + cohesionS.value() + separationS.value() + 1));
+			mouseVector.limit(mouseForce);
 
 			if (mouseButton === LEFT) {
 				this.acc.add(mouseVector);
 			} else if (mouseButton === RIGHT) {
 				this.acc.sub(mouseVector);
 			}
+		}
+
+		if (explode > 0.001) {
+			let mouseVector = explodePos.copy();
+
+			const d = mouseVector.dist(this.pos);
+
+			mouseVector.sub(this.pos);
+			mouseVector.normalize();
+			mouseVector.setMag(explode);
+			mouseVector.div(d * d / 100000 || 1);
+			mouseVector.limit(mouseForce * 3);
+
+			this.acc.sub(mouseVector);
 		}
 	}
 

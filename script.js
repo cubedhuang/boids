@@ -21,9 +21,11 @@ let mouseForce;
 
 let mouseIsOver = true;
 
+let explode = 0;
+let explodePos;
+
 function setup() {
-	// createCanvas(800, 600);
-	const cnv = createCanvas(windowWidth, windowHeight);
+	createCanvas(windowWidth, windowHeight);
 	
 	colorMode(HSB, 255);
 	
@@ -33,18 +35,18 @@ function setup() {
 	cont.mouseOut(() => mouseIsOver = true);
 
 	createElement("h3", "boids").parent(cont);
-	let infoP = createP(`left and right click to move the boids, or just watch their flocking patterns!
+	createP(`left and right click to move the boids, or just watch their flocking patterns!
+		<br>double click to make an explosion
 		<br>middle click or click in the top left to toggle this menu`).parent(cont);
-	// hideB = createButton("toggle menu").parent(infoP);
-	// hideB.mousePressed(toggleMenu);
-	
-	pauseC = createCheckbox(" paused", false).parent(cont);
+
+	pauseC = createCheckbox(" ", false).parent(cont);
+	pauseC.id("pauser")
 
 	boidsP = createP("number of boids: 150").parent(cont);
 	boidsS = createSlider(5, 250, 150, 5).parent(cont);
 
 	createElement("h4", "visual settings").parent(cont);
-	hiddenButtonC = createCheckbox(" hide top left rectangle (it still works)", false).parent(cont);
+	hiddenButtonC = createCheckbox(" hide top left square (it still works)", false).parent(cont);
 	directionC = createCheckbox(" show boid directions", true).parent(cont);
 	desiredC = createCheckbox(" show boid desired directions", false).parent(cont);
 	hueC = createCheckbox(" change hues to indicate speed", true).parent(cont);
@@ -87,6 +89,10 @@ function setup() {
 function draw() {
 	if (!pauseC.checked()) {
 		background(31, 31, 31, 255 - trailS.value());
+
+		mouseForce = sqrt(width * height) * maxSpeedS.value() *
+			maxForceS.value() *
+			(alignS.value() + cohesionS.value() + separationS.value() + 1) / 16000;
 	
 		for (const boid of flock) {
 			boid.flock(flock);
@@ -121,6 +127,17 @@ function draw() {
 		boidsN = n;
 	}
 
+	if (explode > 0.001) {
+		const dia = sqrt(explode) * 150;
+		fill(0, dia);
+		strokeWeight(0.5);
+		stroke(255, dia);
+
+		ellipse(explodePos.x, explodePos.y, dia, dia);
+		explode *= 0.9;
+	}
+
+
 	boidsP.html("number of boids: " + boidsS.value());
 	trailP.html("trail opacity: " + trailS.value());
 	noiseP.html("movement randomness: " + noiseS.value());
@@ -134,7 +151,7 @@ function draw() {
 	if (!hiddenButtonC.checked()) {
 		noStroke();
 		fill(0);
-		rect(0, 0, 20, 20);
+		rect(0, 0, 40, 40);
 	}
 }
 
@@ -153,7 +170,7 @@ function toggleMenu() {
 }
 
 function mousePressed(e) {
-	if (e.button === 0 && mouseX < 20 && mouseY < 20) {
+	if (e.button === 0 && mouseX < 40 && mouseY < 40) {
 		toggleMenu();
 		e.preventDefault();
 	}
@@ -163,3 +180,10 @@ function mousePressed(e) {
 		e.preventDefault();
 	}
 }
+
+new Hammer(document).on("doubletap", function() {
+	if (mouseIsOver) {
+		explode = 1;
+		explodePos = createVector(mouseX, mouseY);
+	}
+});
