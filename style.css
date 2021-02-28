@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	user-select: none;
+	box-sizing: border-box;
+}
+
+html {
+	width: 100%;
+
+	font-size: 16px;
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+	color: #eee;
+	background: #fff;
+
+	margin-bottom: 40px;
+
+	overflow: hidden;
+}
+
+body {
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+}
+
+#container {
+	background-color: #0004;
+	max-width: 100%;
+	width: 500px;
+	height: 100%;
+	padding: 10px 30px;
+	overflow: auto;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	transition: transform 0.5s;
+}
+
+#container :last-child {
+	margin-bottom: 10px;
+}
+
+.hidden {
+	transform: translateX(-100%);
+}
+
+button {
+	display: inline-block;
+}
+
+h3 {
+	font-size: 1.6em;
+	margin-bottom: 12px;
+	margin-top: 20px;
+}
+h4 {
+	font-size: 1.3em;
+	margin-bottom: 0;
+	margin-top: 10px;
+}
+
+canvas {
+	display: block;
+	margin: 0 auto;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: -1;
+}
+
+p {
+	display: block;
+	margin: 10px auto 0 auto !important;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+::-webkit-scrollbar-track {
+	background: #0004; 
+}
+::-webkit-scrollbar-thumb {
+	background: #fff4; 
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #fff6; 
+}
