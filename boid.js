@@ -70,7 +70,7 @@ class Boid {
 
 			mouseVector.sub(this.pos);
 			mouseVector.normalize();
-			mouseVector.div(d * d / 50000 || 1);
+			mouseVector.div(d * d / 10000 || 1);
 			mouseVector.limit(maxForceS.value() * (alignS.value() + cohesionS.value() + separationS.value() + 1));
 
 			if (mouseButton === LEFT) {
