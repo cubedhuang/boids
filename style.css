@@ -37,10 +37,28 @@ body {
 	top: 0px;
 	left: 0px;
 	transition: transform 0.5s;
+
+	/* firefox/experimental scrollbar */
+	scrollbar-color: #fff4 #0004;
+	scrollbar-width: thin;
 }
 
 #container :last-child {
 	margin-bottom: 10px;
+}
+
+/* webkit scrollbar */
+::-webkit-scrollbar {
+	width: 10px;
+}
+::-webkit-scrollbar-track {
+	background: #0004; 
+}
+::-webkit-scrollbar-thumb {
+	background: #fff4; 
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #fff3; 
 }
 
 .hidden {
@@ -74,17 +92,4 @@ canvas {
 p {
 	display: block;
 	margin: 10px auto 0 auto !important;
-}
-
-::-webkit-scrollbar {
-	width: 10px;
-}
-::-webkit-scrollbar-track {
-	background: #0004; 
-}
-::-webkit-scrollbar-thumb {
-	background: #fff4; 
-}
-::-webkit-scrollbar-thumb:hover {
-	background: #fff6; 
 }
