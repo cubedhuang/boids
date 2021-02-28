@@ -122,7 +122,6 @@ class Boid {
 				strokeWeight(2);
 				stroke(239, 255, 255, 127);
 				let end = p5.Vector.add(this.pos, p5.Vector.mult(this.acc, 10 / maxForceS.value()));
-				end.add(p5.Vector.mult(this.vel, 50 / maxSpeedS.value()));
 				line(this.pos.x, this.pos.y, end.x, end.y);
 			}
 		}
