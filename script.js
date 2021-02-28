@@ -37,7 +37,7 @@ function setup() {
 	createElement("h3", "boids").parent(cont);
 	createP(`left and right click to move the boids, or just watch their flocking patterns!
 		<br>double click to make an explosion
-		<br>middle click or click in the top left to toggle this menu`).parent(cont);
+		<br>middle click or click in the top right to toggle this menu`).parent(cont);
 
 	pauseC = createCheckbox(" ", false).parent(cont);
 	pauseC.id("pauser")
@@ -46,7 +46,7 @@ function setup() {
 	boidsS = createSlider(5, 250, 150, 5).parent(cont);
 
 	createElement("h4", "visual settings").parent(cont);
-	hiddenButtonC = createCheckbox(" hide top left square (it still works)", false).parent(cont);
+	hiddenButtonC = createCheckbox(" hide top right square (it still works)", false).parent(cont);
 	directionC = createCheckbox(" show boid directions", true).parent(cont);
 	desiredC = createCheckbox(" show boid desired directions", false).parent(cont);
 	hueC = createCheckbox(" change hues to indicate speed", true).parent(cont);
@@ -151,7 +151,7 @@ function draw() {
 	if (!hiddenButtonC.checked()) {
 		noStroke();
 		fill(0);
-		rect(0, 0, 40, 40);
+		rect(width-40, 0, 40, 40);
 	}
 }
 
@@ -170,7 +170,7 @@ function toggleMenu() {
 }
 
 function mousePressed(e) {
-	if (e.button === 0 && mouseX < 40 && mouseY < 40) {
+	if (e.button === 0 && mouseX >= width - 40 && mouseY <= 40) {
 		toggleMenu();
 		e.preventDefault();
 	}

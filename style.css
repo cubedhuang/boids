@@ -32,9 +32,9 @@ body {
 	height: 100%;
 	padding: 10px 30px;
 	overflow: auto;
-	position: sticky;
+	position: absolute;
 	top: 0px;
-	left: 0px;
+	right: 0px;
 	transition: transform 0.5s;
 
 	/* firefox/experimental scrollbar */
@@ -61,7 +61,7 @@ body {
 }
 
 .hidden {
-	transform: translateX(-100%);
+	transform: translateX(100%);
 }
 
 h3 {
