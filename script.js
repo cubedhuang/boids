@@ -26,7 +26,8 @@ let explodePos;
 
 let shareB, copiedText = 0;
 
-// let fpsP;
+let debugC;
+let fpsP;
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
@@ -39,7 +40,6 @@ function setup() {
 	cont.mouseOut(() => mouseIsOver = true);
 
 	createElement("h3", "boids").parent(cont);
-	// fpsP = createP("fps").parent(cont);
 	createP(`left and right click to move the boids, or just watch their flocking patterns!
 		<br>double click to make an explosion
 		<br>middle click or click in the top right to toggle this menu`).parent(cont);
@@ -142,6 +142,21 @@ function setup() {
 	noiseP = createP("movement randomness: 0").parent(cont);
 	noiseS = createSlider(0, 10, 0, 0.5).parent(cont);
 	noiseS.elt.value = parseFloat(param("noi")) || noiseS.elt.value;
+
+	createElement("h4", "debug info").parent(cont);
+	debugC = createCheckbox(" show debug info", false).parent(cont);
+	debugC.mousePressed(toggleDebug)
+	let debugDiv = createDiv().parent(cont);
+	debugDiv.class("hidden-o");
+	fpsP = createP("fps").parent(debugDiv);
+
+	function toggleDebug() {	
+		if (!debugC.checked()) debugDiv.removeClass("hidden-o");
+		else {
+			debugDiv.class("hidden-o");
+			mouseIsOver = true;
+		}
+	}
 
 	background(31);
 	for (let i = 0; i < 150; i++) {
@@ -286,7 +301,9 @@ function draw() {
 		rect(width - 40, 0, 40, 40);
 	}
 
-	// fpsP.html(1000 / deltaTime);
+	if (debugC.checked()) {
+		fpsP.html("fps: " + (1000 / deltaTime).toFixed(3));
+	}
 }
 
 function windowResized() {

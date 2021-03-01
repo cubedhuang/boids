@@ -35,7 +35,6 @@ body {
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	transition: transform 0.5s;
 
 	/* firefox/experimental scrollbar */
 	scrollbar-color: #fff4 #0004;
@@ -61,7 +60,12 @@ body {
 }
 
 .hidden {
+	transition: transform 0.5s;
 	transform: translateX(100%);
+}
+
+.hidden-o {
+	display: none;
 }
 
 h3 {
