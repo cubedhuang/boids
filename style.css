@@ -204,7 +204,7 @@ label {
 	width: 36px;
 
 	top: -12px;
-	left: -15px;
+	left: -13px;
 }
 
 #pauser label::after {
@@ -215,7 +215,7 @@ label {
 	border-bottom: none;
 	border-top: none;
 	border-color: #fff8;
-	left: -7px;
+	left: -5px;
 	top: -6px;
 
 	transform: rotate(0);
@@ -232,5 +232,30 @@ label {
 	border-left: 16px solid #fff8;
 	border-bottom: 12px solid transparent;
 	border-top: 12px solid transparent;
-	left: -4px;
+	left: -2px;
+}
+
+/* button css */
+
+button {
+	display: block;
+	margin-top: 10px;
+	padding: 10px;
+	font-size: 16px;
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+	color: #eee;
+	border: 2px solid #0008;
+	border-radius: 0;
+	background: #0008;
+	transition: background 0.1s;
+}
+button:hover {
+	background: #fff2;
+}
+button:active {
+	background: #fff4;
+}
+
+button.copied {
+	border: 2px solid #0ff4;
 }
