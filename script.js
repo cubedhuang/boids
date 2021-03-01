@@ -26,6 +26,8 @@ let explodePos;
 
 let shareB, copiedText = 0;
 
+// let fpsP;
+
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 	
@@ -37,6 +39,7 @@ function setup() {
 	cont.mouseOut(() => mouseIsOver = true);
 
 	createElement("h3", "boids").parent(cont);
+	// fpsP = createP("fps").parent(cont);
 	createP(`left and right click to move the boids, or just watch their flocking patterns!
 		<br>double click to make an explosion
 		<br>middle click or click in the top right to toggle this menu`).parent(cont);
@@ -64,7 +67,7 @@ function setup() {
 	});
 
 	boidsP = createP("number of boids: 150").parent(cont);
-	boidsS = createSlider(5, 250, 150, 5).parent(cont);
+	boidsS = createSlider(5, 300, 150, 5).parent(cont);
 	boidsS.elt.value = parseInt(param("bds")) || boidsS.elt.value;
 
 	createElement("h4", "visual settings").parent(cont);
@@ -212,9 +215,9 @@ function draw() {
 	if (!pauseC.checked()) {
 		background(31, 31, 31, 255 - trailS.value());
 
-		mouseForce = sqrt(width * height) * maxSpeedS.value() *
+		mouseForce = maxSpeedS.value() *
 			maxForceS.value() *
-			(alignS.value() + cohesionS.value() + separationS.value() + 1) / 16000;
+			(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
 	
 		for (const boid of flock) {
 			boid.flock(flock);
@@ -280,8 +283,10 @@ function draw() {
 	if (!hiddenButtonC.checked()) {
 		noStroke();
 		fill(0);
-		rect(width-40, 0, 40, 40);
+		rect(width - 40, 0, 40, 40);
 	}
+
+	// fpsP.html(1000 / deltaTime);
 }
 
 function windowResized() {

@@ -6,6 +6,7 @@ class Boid {
 		this.vel.setMag(random(maxSpeedS.value()));
 		this.acc = createVector();
 		this.neighbors = [];
+		this.dists = [];
 	}
 
 	flock(boids) {
@@ -17,14 +18,23 @@ class Boid {
 		let separation = createVector();
 
 		this.neighbors = [];
+		this.dists = [];
 
 		for (const boid of boids) {
 			if (boid === this) continue;
 
-			let d = this.pos.dist(boid.pos);
+			let d;
+
+			if (this.index > boid.index) {
+				let i = boid.neighbors.indexOf(this);
+				if (i + 1) {
+					d = boid.dists[i];
+				} else continue;
+			} else d = this.pos.dist(boid.pos);
 			
 			if (d <= visionS.value()) {
 				this.neighbors.push(boid);
+				this.dists.push(d);
 
 				alignment.add(boid.vel);
 				cohesion.add(boid.pos);
