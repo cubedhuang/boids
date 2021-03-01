@@ -205,7 +205,7 @@ function SURL() {
 }
 
 function updatePageURL(val) {
-	window.history.replaceState({}, document.title, val || SURL());
+	window.history.replaceState({}, document.title, typeof val === "string" ? val : SURL());
 }
 
 function draw() {
