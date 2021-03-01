@@ -1,21 +1,41 @@
+const Vec2 = glMatrix.vec2;
+
+function limitVec(vec, length) {
+	let l1 = Vec2.sqrLen(vec);
+	let l2 = length * length;
+	if (l1 <= l2) return;
+	Vec2.normalize(vec, vec);
+	Vec2.scale(vec, vec, length);
+}
+
 class Boid {
 	constructor (index) {
 		this.index = index;
-		this.pos = createVector(random(width), random(height));
-		this.vel = p5.Vector.random2D();
-		this.vel.setMag(random(maxSpeedS.value()));
-		this.acc = createVector();
+		this.pos = Vec2.fromValues(random(width), random(height));
+
+		this.vel = Vec2.create();
+		Vec2.random(this.vel, random(maxSpeedS.value()));
+		this.acc = Vec2.create();
+
+		this.aln = Vec2.create();
+		this.csn = Vec2.create();
+		this.sep = Vec2.create();
+
 		this.neighbors = [];
 		this.dists = [];
+
+		this.temp = Vec2.create();
+		this.mouseVec = Vec2.create();
+		this.explodeVec = Vec2.create();
 	}
 
 	flock(boids) {
-		this.acc.mult(0);
+		Vec2.zero(this.acc);
 
 		let total = 0;
-		let alignment = createVector();
-		let cohesion = createVector();
-		let separation = createVector();
+		Vec2.zero(this.aln);
+		Vec2.zero(this.csn);
+		Vec2.zero(this.sep);
 
 		this.neighbors = [];
 		this.dists = [];
@@ -30,78 +50,78 @@ class Boid {
 				if (i + 1) {
 					d = boid.dists[i];
 				} else continue;
-			} else d = this.pos.dist(boid.pos);
+			} else d = Vec2.sqrDist(this.pos, boid.pos);
 			
-			if (d <= visionS.value()) {
+			if (d <= sqVis) {
 				this.neighbors.push(boid);
 				this.dists.push(d);
 
-				alignment.add(boid.vel);
-				cohesion.add(boid.pos);
+				Vec2.add(this.aln, this.aln, boid.vel);
+				Vec2.add(this.csn, this.csn, boid.pos);
 				
-				let diff = p5.Vector.sub(this.pos, boid.pos);
-				diff.div((d * d) || 1);
-				separation.add(diff);
+				Vec2.sub(this.temp, this.pos, boid.pos);
+				Vec2.scale(this.temp, this.temp, 1 / d || 1);
+				Vec2.add(this.sep, this.sep, this.temp);
 				
 				total++;
 			}
 		}
 
 		if (total > 0) {
-			alignment.div(total);
-			alignment.setMag(maxSpeedS.value());
-			alignment.sub(this.vel);
-			alignment.limit(maxForceS.value());
-
-			cohesion.div(total);
-			cohesion.sub(this.pos);
-			cohesion.setMag(maxSpeedS.value());
-			cohesion.sub(this.vel);
-			cohesion.limit(maxForceS.value());
-
-			separation.div(total);
-			separation.setMag(maxSpeedS.value());
-			separation.sub(this.vel);
-			separation.limit(maxForceS.value());
+			Vec2.normalize(this.aln, this.aln);
+			Vec2.scale(this.aln, this.aln, maxSpeedS.value());
+			Vec2.sub(this.aln, this.aln, this.vel);
+			limitVec(this.aln, maxForceS.value());
+			
+			Vec2.scale(this.csn, this.csn, 1 / total);
+			Vec2.sub(this.csn, this.csn, this.pos);
+			Vec2.normalize(this.csn, this.csn);
+			Vec2.scale(this.csn, this.csn, maxSpeedS.value());
+			Vec2.sub(this.csn, this.csn, this.vel);
+			limitVec(this.csn, maxForceS.value());
+			
+			Vec2.normalize(this.sep, this.sep);
+			Vec2.scale(this.sep, this.sep, maxSpeedS.value());
+			Vec2.sub(this.sep, this.sep, this.vel);
+			limitVec(this.sep, maxForceS.value());
 		}
 
-		alignment.mult(alignS.value());
-		cohesion.mult(cohesionS.value());
-		separation.mult(separationS.value());
+		Vec2.scale(this.aln, this.aln, alignS.value());
+		Vec2.scale(this.csn, this.csn, cohesionS.value());
+		Vec2.scale(this.sep, this.sep, separationS.value());
 
-		this.acc.add(alignment);
-		this.acc.add(cohesion);
-		this.acc.add(separation);
+		Vec2.add(this.acc, this.acc, this.aln);
+		Vec2.add(this.acc, this.acc, this.csn);
+		Vec2.add(this.acc, this.acc, this.sep);
 
 		if (mouseIsOver && mouseIsPressed && mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
-			let mouseVector = createVector(mouseX, mouseY);
+			Vec2.set(this.mouseVec, mouseX, mouseY);
 
-			const d = mouseVector.dist(this.pos);
+			const d = Vec2.sqrDist(this.mouseVec, this.pos);
 
-			mouseVector.sub(this.pos);
-			mouseVector.normalize();
-			mouseVector.div(d * d / 10000 || 1);
-			mouseVector.limit(mouseForce);
+			Vec2.sub(this.mouseVec, this.mouseVec, this.pos);
+			Vec2.normalize(this.mouseVec, this.mouseVec);
+			Vec2.scale(this.mouseVec, this.mouseVec, 10000 / d || 1);
+			limitVec(this.mouseVec, mouseForce);
 
 			if (mouseButton === LEFT) {
-				this.acc.add(mouseVector);
+				Vec2.add(this.acc, this.acc, this.mouseVec);
 			} else if (mouseButton === RIGHT) {
-				this.acc.sub(mouseVector);
+				Vec2.sub(this.acc, this.acc, this.mouseVec);
 			}
 		}
 
 		if (explode > 0.001) {
-			let mouseVector = explodePos.copy();
+			Vec2.copy(this.explodeVec, explodePos);
 
-			const d = mouseVector.dist(this.pos);
+			const d = Vec2.sqrDist(this.explodeVec, this.pos);
 
-			mouseVector.sub(this.pos);
-			mouseVector.normalize();
-			mouseVector.setMag(explode);
-			mouseVector.div(d * d / 100000 || 1);
-			mouseVector.limit(mouseForce * 3);
+			Vec2.sub(this.explodeVec, this.explodeVec, this.pos);
+			Vec2.normalize(this.explodeVec, this.explodeVec);
+			Vec2.scale(this.explodeVec, this.explodeVec, explode * 100000 / d || 1);
+			limitVec(this.explodeVec, mouseForce * 3);
 
-			this.acc.sub(mouseVector);
+			Vec2.sub(this.acc, this.acc, this.explodeVec);
 		}
 	}
 
@@ -117,22 +137,24 @@ class Boid {
 			else noStroke();
 			
 			let dia = visionS.value() * 2;
-			ellipse(this.pos.x, this.pos.y, dia, dia);
+			ellipse(this.pos[0], this.pos[1], dia, dia);
 		}
 		
 		if (directionC.checked()) {
 			strokeWeight(1);
 			stroke(255, 63);
-			let end = p5.Vector.add(this.pos, p5.Vector.mult(this.vel, 50 / maxSpeedS.value()));
-			line(this.pos.x, this.pos.y, end.x, end.y);
+			Vec2.scale(this.temp, this.vel, 50 / maxSpeedS.value());
+			Vec2.add(this.temp, this.temp, this.pos);
+			line(this.pos[0], this.pos[1], this.temp[0], this.temp[1]);
 		}
 
 		if (desiredC.checked()) {
-			if (this.acc.magSq()) {
+			if (Vec2.sqrLen(this.acc)) {
 				strokeWeight(2);
 				stroke(239, 255, 255, 127);
-				let end = p5.Vector.add(this.pos, p5.Vector.mult(this.acc, 10 / maxForceS.value()));
-				line(this.pos.x, this.pos.y, end.x, end.y);
+				Vec2.scale(this.temp, this.acc, 10 / maxForceS.value());
+				Vec2.add(this.temp, this.temp, this.pos);
+				line(this.pos[0], this.pos[1], this.temp[0], this.temp[1]);
 			}
 		}
 
@@ -141,52 +163,47 @@ class Boid {
 			stroke(127, 255, 255, 63);
 
 			for (const boid of this.neighbors) {
-				if (boid.index > this.index && this.pos.dist(boid.pos) <= visionS.value())
-					line(this.pos.x, this.pos.y, boid.pos.x, boid.pos.y);
+				if (boid.index > this.index && Vec2.sqrDist(this.pos, boid.pos) <= sqVis)
+					line(this.pos[0], this.pos[1], boid.pos[0], boid.pos[1]);
 			}
 		}
 	}
 
 	showSelf() {
 		strokeWeight(6);
-		if (hueC.checked()) stroke(map(this.vel.mag(), maxSpeedS.value() / 10, maxSpeedS.value(), 0, 127, true), 255, 255);
+		if (hueC.checked()) stroke(map(Vec2.len(this.vel), maxSpeedS.value() / 10, maxSpeedS.value(), 0, 127, true), 255, 255);
 		else stroke(255);
-		point(this.pos.x, this.pos.y);
+		point(this.pos[0], this.pos[1]);
 	}
 
 	update() {
-		this.vel.add(this.acc);
-		let noise = p5.Vector.random2D();
-		noise.mult(noiseS.value());
-		noise.mult(maxSpeedS.value() / 100);
-		this.vel.add(noise);
-		this.vel.limit(maxSpeedS.value());
+		Vec2.add(this.vel, this.vel, this.acc);
+		Vec2.random(this.temp);
+		Vec2.scale(this.temp, this.temp, noiseS.value() * maxSpeedS.value() / 100);
+		Vec2.add(this.vel, this.vel, this.temp);
+		limitVec(this.vel, maxSpeedS.value());
 
-		this.pos.add(this.vel);
+		Vec2.add(this.pos, this.pos, this.vel);
 
 		if (bounceC.checked()) {
 			let ran = false;
-			if (this.pos.x < 0 || this.pos.x > width) {
+			if (this.pos[0] < 0 || this.pos[0] > width) {
 				ran = true;
-				this.vel.x = -this.vel.x;
+				this.vel[0] = -this.vel[0];
 			}
-			if (this.pos.y < 0 || this.pos.y > height) {
+			if (this.pos[1] < 0 || this.pos[1] > height) {
 				ran = true;
-				this.vel.y = -this.vel.y;
+				this.vel[1] = -this.vel[1];
 			}
 			if (ran) {
-				let center = createVector(width / 2, height / 2);
-				center.sub(this.pos);
-				center.div(center.dist(this.pos));
-				this.acc.add(center);
-				this.pos.x = constrain(this.pos.x, 0, width);
-				this.pos.y = constrain(this.pos.y, 0, height);
+				this.pos[0] = constrain(this.pos[0], 0, width);
+				this.pos[1] = constrain(this.pos[1], 0, height);
 			}
 		} else {
-			if (this.pos.x < 0) this.pos.x = width;
-			if (this.pos.x > width) this.pos.x = 0;
-			if (this.pos.y < 0) this.pos.y = height;
-			if (this.pos.y > height) this.pos.y = 0;
+			if (this.pos[0] < 0) this.pos[0] = width;
+			if (this.pos[0] > width) this.pos[0] = 0;
+			if (this.pos[1] < 0) this.pos[1] = height;
+			if (this.pos[1] > height) this.pos[1] = 0;
 		}
 	}
 }

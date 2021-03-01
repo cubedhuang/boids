@@ -39,6 +39,7 @@ body {
 	/* firefox/experimental scrollbar */
 	scrollbar-color: #fff4 #0004;
 	scrollbar-width: thin;
+	transition: transform 0.5s;
 }
 
 #container :last-child {

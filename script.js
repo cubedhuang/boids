@@ -1,6 +1,7 @@
 let flock = [];
 
-let boidsS, boidsP, boidsN = 150;
+const DEFAULT_BOIDS = 250;
+let boidsS, boidsP, boidsN = DEFAULT_BOIDS;
 
 let cont;
 let hideB;
@@ -18,16 +19,17 @@ let visionS, visionP;
 let maxForceS, maxForceP, maxSpeedS, maxSpeedP;
 let noiseS, noiseP;
 let mouseForce;
+let sqVis;
 
 let mouseIsOver = true;
 
 let explode = 0;
-let explodePos;
+let explodePos = Vec2.create();
 
 let shareB, copiedText = 0;
 
 let debugC;
-let fpsP;
+let fpsP, fpsA = [];
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
@@ -66,8 +68,8 @@ function setup() {
 		document.body.removeChild(el);
 	});
 
-	boidsP = createP("number of boids: 150").parent(cont);
-	boidsS = createSlider(5, 300, 150, 5).parent(cont);
+	boidsP = createP("number of boids: " + DEFAULT_BOIDS).parent(cont);
+	boidsS = createSlider(5, 1000, DEFAULT_BOIDS, 5).parent(cont);
 	boidsS.elt.value = parseInt(param("bds")) || boidsS.elt.value;
 
 	createElement("h4", "visual settings").parent(cont);
@@ -117,8 +119,8 @@ function setup() {
 	else bounceD = false;
 	bounceC = createCheckbox(" bounce off of edges", bounceD).parent(cont);
 	
-	visionP = createP("boid vision: 100").parent(cont);
-	visionS = createSlider(0, 500, 100, 5).parent(cont);
+	visionP = createP("boid vision: 75").parent(cont);
+	visionS = createSlider(0, 500, 75, 5).parent(cont);
 	visionS.elt.value = parseInt(param("vis")) || visionS.elt.value;
 	
 	alignP = createP("alignment force: 1").parent(cont);
@@ -145,13 +147,13 @@ function setup() {
 
 	createElement("h4", "debug info").parent(cont);
 	debugC = createCheckbox(" show debug info", false).parent(cont);
-	debugC.mousePressed(toggleDebug)
+	debugC.elt.onclick = toggleDebug;
 	let debugDiv = createDiv().parent(cont);
 	debugDiv.class("hidden-o");
 	fpsP = createP("fps").parent(debugDiv);
 
 	function toggleDebug() {	
-		if (!debugC.checked()) debugDiv.removeClass("hidden-o");
+		if (debugC.checked()) debugDiv.removeClass("hidden-o");
 		else {
 			debugDiv.class("hidden-o");
 			mouseIsOver = true;
@@ -159,7 +161,7 @@ function setup() {
 	}
 
 	background(31);
-	for (let i = 0; i < 150; i++) {
+	for (let i = 0; i < DEFAULT_BOIDS; i++) {
 		flock.push(new Boid(i));
 	}
 
@@ -233,6 +235,7 @@ function draw() {
 		mouseForce = maxSpeedS.value() *
 			maxForceS.value() *
 			(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
+		sqVis = visionS.value() * visionS.value();
 	
 		for (const boid of flock) {
 			boid.flock(flock);
@@ -273,7 +276,7 @@ function draw() {
 		strokeWeight(0.5);
 		stroke(255, dia);
 
-		ellipse(explodePos.x, explodePos.y, dia, dia);
+		ellipse(explodePos[0], explodePos[1], dia, dia);
 		explode *= 0.9;
 	}
 
@@ -302,7 +305,9 @@ function draw() {
 	}
 
 	if (debugC.checked()) {
-		fpsP.html("fps: " + (1000 / deltaTime).toFixed(3));
+		fpsA.push(1000 / deltaTime);
+		if (fpsA.length > 30) fpsA.shift();
+		fpsP.html("fps: " + (fpsA.reduce((a, v) => a + v, 0) / 30).toFixed(3));
 	}
 }
 
@@ -335,6 +340,6 @@ function mousePressed(e) {
 new Hammer(document).on("doubletap", function() {
 	if (mouseIsOver) {
 		explode = 1;
-		explodePos = createVector(mouseX, mouseY);
+		Vec2.set(explodePos, mouseX, mouseY);
 	}
 });
