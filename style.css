@@ -30,7 +30,7 @@ body {
 	max-width: 100%;
 	width: 500px;
 	height: 100%;
-	padding: 10px 30px;
+	padding: 10px 30px 50px 30px;
 	overflow: auto;
 	position: absolute;
 	top: 0px;
@@ -42,9 +42,9 @@ body {
 	transition: transform 0.5s;
 }
 
-#container :last-child {
-	margin-bottom: 10px;
-}
+/* #container :last-child {
+	margin-bottom: 30px;
+} */
 
 /* webkit scrollbar */
 ::-webkit-scrollbar {
@@ -201,7 +201,7 @@ label {
 
 #pauser input[type="checkbox"] {
 	height: 36px;
-	/* opacity: 1; */
+	display: inline-block;
 }
 
 #pauser label::before{
@@ -263,4 +263,18 @@ button:active {
 
 button.copied {
 	border: 2px solid #0ff4;
+}
+
+/* nexter */
+
+.nexter {
+	position: relative;
+	right: 0;
+	float: right;
+	top: -4px;
+	display: none;
+}
+
+input[type="checkbox"]:checked + label + .nexter {
+	display: block;
 }

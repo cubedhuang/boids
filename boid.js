@@ -174,6 +174,14 @@ class Boid {
 		if (hueC.checked()) stroke(map(Vec2.len(this.vel), maxSpeedS.value() / 10, maxSpeedS.value(), 0, 127, true), 255, 255);
 		else stroke(255);
 		point(this.pos[0], this.pos[1]);
+
+		if (indexC.checked()) {
+			noStroke();
+			textAlign(CENTER);
+			textFont("monospace");
+			fill(255);
+			text(this.index, this.pos[0], this.pos[1] - 5);
+		}
 	}
 
 	update() {

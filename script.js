@@ -30,6 +30,10 @@ let shareB, copiedText = 0;
 
 let debugC;
 let fpsP, fpsA = [];
+let indexC;
+
+let nextB;
+let nextFrame = false;
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
@@ -49,24 +53,28 @@ function setup() {
 	pauseC = createCheckbox(" ", false).parent(cont);
 	pauseC.id("pauser");
 
-	shareB = createButton("share your settings!").parent(cont);
+	nextB = createButton("next frame").parent(pauseC);
+	nextB.class("nexter");
+	nextB.mousePressed(() => nextFrame = true);
+
+	// shareB = createButton("share your settings!").parent(cont);
 	resetB = createButton("reset simulation").parent(cont);
 	resetB.mousePressed(() => {
 		updatePageURL(window.location.href.split('?')[0]);
 		location.reload();
 	})
 
-	shareB.mousePressed(e => {
-		copiedText = 1;
-		shareB.html("copied link!");
-		shareB.class("copied");
-		const el = document.createElement('textarea');
-		el.value = SURL();
-		document.body.appendChild(el);
-		el.select();
-		document.execCommand('copy');
-		document.body.removeChild(el);
-	});
+	// shareB.mousePressed(e => {
+	// 	copiedText = 1;
+	// 	shareB.html("copied link!");
+	// 	shareB.class("copied");
+	// 	const el = document.createElement('textarea');
+	// 	el.value = SURL();
+	// 	document.body.appendChild(el);
+	// 	el.select();
+	// 	document.execCommand('copy');
+	// 	document.body.removeChild(el);
+	// });
 
 	boidsP = createP("number of boids: " + DEFAULT_BOIDS).parent(cont);
 	boidsS = createSlider(5, 1000, DEFAULT_BOIDS, 5).parent(cont);
@@ -138,7 +146,7 @@ function setup() {
 	maxForceS.elt.value = parseFloat(param("mxf")) || maxForceS.elt.value;
 	
 	maxSpeedP = createP("max speed: 8").parent(cont);
-	maxSpeedS = createSlider(0, 16, 8, 0.5).parent(cont);
+	maxSpeedS = createSlider(0.5, 16, 8, 0.5).parent(cont);
 	maxSpeedS.elt.value = parseFloat(param("mxs")) || maxSpeedS.elt.value;
 	
 	noiseP = createP("movement randomness: 0").parent(cont);
@@ -151,6 +159,7 @@ function setup() {
 	let debugDiv = createDiv().parent(cont);
 	debugDiv.class("hidden-o");
 	fpsP = createP("fps").parent(debugDiv);
+	indexC = createCheckbox(" show boid indices").parent(debugDiv);
 
 	function toggleDebug() {	
 		if (debugC.checked()) debugDiv.removeClass("hidden-o");
@@ -249,6 +258,20 @@ function draw() {
 		}
 	} else {
 		background(31, 31, 31, 255);
+
+		if (nextFrame) {
+			mouseForce = maxSpeedS.value() * maxForceS.value() *
+				(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
+			sqVis = visionS.value() * visionS.value();
+			
+			for (const boid of flock) {
+				boid.flock(flock);
+			}
+			for (const boid of flock) {
+				boid.update();
+			}
+			nextFrame = false;
+		}
 	
 		for (const boid of flock) {
 			boid.showData();
@@ -306,8 +329,9 @@ function draw() {
 
 	if (debugC.checked()) {
 		fpsA.push(1000 / deltaTime);
-		if (fpsA.length > 30) fpsA.shift();
-		fpsP.html("fps: " + (fpsA.reduce((a, v) => a + v, 0) / 30).toFixed(3));
+		let fps = fpsA.reduce((a, v) => a + v, 0) / fpsA.length;
+		if (fpsA.length > fps) fpsA.shift();
+		fpsP.html("fps: " + fps.toFixed(1));
 	}
 }
 
