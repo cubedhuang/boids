@@ -36,7 +36,7 @@ function initSettings() {
 	// });
 
 	boidsP = createP("number of boids: " + DEFAULT_BOIDS).parent(cont);
-	boidsS = createSlider(5, 1000, DEFAULT_BOIDS, 5).parent(cont);
+	boidsS = createSlider(10, 1500, DEFAULT_BOIDS, 10).parent(cont);
 	boidsS.elt.value = parseInt(param("bds")) || boidsS.elt.value;
 
 	createElement("h4", "visual settings").parent(cont);
@@ -86,8 +86,8 @@ function initSettings() {
 	else bounceD = false;
 	bounceC = createCheckbox(" bounce off of edges", bounceD).parent(cont);
 	
-	visionP = createP("boid vision: 75").parent(cont);
-	visionS = createSlider(0, 500, 75, 5).parent(cont);
+	visionP = createP("boid vision: 50").parent(cont);
+	visionS = createSlider(0, 300, 50, 5).parent(cont);
 	visionS.elt.value = parseInt(param("vis")) || visionS.elt.value;
 	
 	alignP = createP("alignment force: 1").parent(cont);
@@ -118,7 +118,9 @@ function initSettings() {
 	let debugDiv = createDiv().parent(cont);
 	debugDiv.class("hidden-o");
 	fpsP = createP("fps").parent(debugDiv);
+	hideBoidC = createCheckbox(" hide boids").parent(debugDiv);
 	indexC = createCheckbox(" show boid indices").parent(debugDiv);
+	qtC = createCheckbox(" show quadtree").parent(debugDiv);
 
 	function toggleDebug() {
 		if (debugC.checked()) debugDiv.removeClass("hidden-o");

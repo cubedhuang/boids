@@ -1,4 +1,4 @@
-let flock = [];
+let flock;
 
 const DEFAULT_BOIDS = 250;
 let boidsS, boidsP, boidsN = DEFAULT_BOIDS;
@@ -19,7 +19,7 @@ let visionS, visionP;
 let maxForceS, maxForceP, maxSpeedS, maxSpeedP;
 let noiseS, noiseP;
 let mouseForce;
-let sqVis;
+let vis, sqVis, dbVis;
 
 let mouseIsOver = true;
 
@@ -30,7 +30,9 @@ let shareB, copiedText = 0;
 
 let debugC;
 let fpsP, fpsA = [];
+let hideBoidC;
 let indexC;
+let qtC;
 
 let nextB;
 let nextFrame = false;
@@ -43,9 +45,8 @@ function setup() {
 	initSettings();
 
 	background(31);
-	for (let i = 0; i < DEFAULT_BOIDS; i++) {
-		flock.push(new Boid(i));
-	}
+
+	flock = new Flock(DEFAULT_BOIDS);
 }
 
 function draw() {
@@ -55,18 +56,12 @@ function draw() {
 		mouseForce = maxSpeedS.value() *
 			maxForceS.value() *
 			(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
-		sqVis = visionS.value() * visionS.value();
+		vis = visionS.value();
+		sqVis = vis * vis;
+		dbVis = vis * 2;
 	
-		for (const boid of flock) {
-			boid.flock(flock);
-		}
-		for (const boid of flock) {
-			boid.update();
-			boid.showData();
-		}
-		for (const boid of flock) {
-			boid.showSelf();
-		}
+		flock.update();
+		flock.draw();
 	} else {
 		background(31, 31, 31, 255);
 
@@ -74,34 +69,18 @@ function draw() {
 			mouseForce = maxSpeedS.value() * maxForceS.value() *
 				(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
 			sqVis = visionS.value() * visionS.value();
+			dbVis = visionS.value() * 2;
 			
-			for (const boid of flock) {
-				boid.flock(flock);
-			}
-			for (const boid of flock) {
-				boid.update();
-			}
+			flock.update();
 			nextFrame = false;
 		}
 	
-		for (const boid of flock) {
-			boid.showData();
-		}
-		for (const boid of flock) {
-			boid.showSelf();
-		}
+		flock.draw();
 	}
 
 	if (boidsN !== boidsS.value()) {
-		let n = boidsS.value();
-		if (boidsN > n) {
-			flock = flock.slice(0, n);
-		} else {
-			for (let i = boidsN; i < n; i++) {
-				flock.push(new Boid(i));
-			}
-		}
-		boidsN = n;
+		flock.resize(boidsS.value());
+		boidsN = boidsS.value();
 	}
 
 	if (explode > 0.001) {

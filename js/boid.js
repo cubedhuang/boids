@@ -1,8 +1,21 @@
-function limitVec(vec, length) {
-	let l1 = V.sqrLen(vec);
-	let l2 = length * length;
-	if (l1 <= l2) return;
-	V.setLen(vec, vec, length);
+function findInCircle(quadtree, x, y, radius) {
+	const result = [],
+	radius2 = radius * radius,
+	accept = d => d !== this && result.push(d);
+
+	quadtree.visit(function(node, x1, y1, x2, y2) {
+	if (node.length) {
+		return x1 >= x + radius || y1 >= y + radius || x2 < x - radius || y2 < y - radius;
+	}
+
+	const dx = +quadtree._x.call(null, node.data) - x,
+			dy = +quadtree._y.call(null, node.data) - y;
+		if (dx * dx + dy * dy < radius2) {
+			do { accept(node.data); } while (node = node.next);
+		}
+	});
+	
+	return result;
 }
 
 class Boid {
@@ -26,7 +39,7 @@ class Boid {
 		this.explodeVec = V.create();
 	}
 
-	flock(boids) {
+	flock(flock) {
 		V.zero(this.acc);
 
 		let total = 0;
@@ -37,31 +50,64 @@ class Boid {
 		this.neighbors = [];
 		this.dists = [];
 
-		for (const boid of boids) {
-			if (boid === this) continue;
+		flock.qt.visit((node, x1, y1, x2, y2) => {
+			if (node.length) {
+				return x1 >= this.pos[0] + vis || y1 >= this.pos[1] + vis || x2 < this.pos[0] - vis || y2 < this.pos[1] - vis;
+			}
+
+			let boid = node.data;
 
 			let d;
-
 			if (this.index > boid.index) {
 				let i = boid.neighbors.indexOf(this);
 				if (i + 1) {
 					d = boid.dists[i];
-				} else continue;
+				} else return;
 			} else d = V.sqrDist(this.pos, boid.pos);
-			
-			if (d <= sqVis) {
-				this.neighbors.push(boid);
-				this.dists.push(d);
 
-				V.add(this.aln, this.aln, boid.vel);
-				V.add(this.csn, this.csn, boid.pos);
-				
-				V.sub(this.temp, this.pos, boid.pos);
-				V.sclAdd(this.sep, this.sep, this.temp, 1 / d || 1);
-				
-				total++;
+			if (d < sqVis) {
+				do {
+					if (boid !== this) {
+						this.neighbors.push(boid);
+						this.dists.push(d);
+		
+						V.add(this.aln, this.aln, boid.vel);
+						V.add(this.csn, this.csn, boid.pos);
+						
+						V.sub(this.temp, this.pos, boid.pos);
+						V.sclAdd(this.sep, this.sep, this.temp, 1 / d || 1);
+						
+						total++;
+					}
+				} while (boid = node.next?.data);
 			}
-		}
+		});
+
+		// for (const boid of boids) {
+		// 	if (boid === this) continue;
+
+		// 	let d;
+
+		// 	if (this.index > boid.index) {
+		// 		let i = boid.neighbors.indexOf(this);
+		// 		if (i + 1) {
+		// 			d = boid.dists[i];
+		// 		} else continue;
+		// 	} else d = V.sqrDist(this.pos, boid.pos);
+			
+		// 	if (d <= sqVis) {
+		// 		this.neighbors.push(boid);
+		// 		this.dists.push(d);
+
+		// 		V.add(this.aln, this.aln, boid.vel);
+		// 		V.add(this.csn, this.csn, boid.pos);
+				
+		// 		V.sub(this.temp, this.pos, boid.pos);
+		// 		V.sclAdd(this.sep, this.sep, this.temp, 1 / d || 1);
+				
+		// 		total++;
+		// 	}
+		// }
 
 		if (total > 0) {
 			V.setLen(this.aln, this.aln, maxSpeedS.value());
@@ -155,11 +201,6 @@ class Boid {
 	}
 
 	showSelf() {
-		strokeWeight(6);
-		if (hueC.checked()) stroke(map(V.len(this.vel), maxSpeedS.value() / 10, maxSpeedS.value(), 0, 127, true), 255, 255);
-		else stroke(255);
-		point(this.pos[0], this.pos[1]);
-
 		if (indexC.checked()) {
 			noStroke();
 			textAlign(CENTER);
@@ -167,6 +208,11 @@ class Boid {
 			fill(255);
 			text(this.index, this.pos[0], this.pos[1] - 5);
 		}
+
+		strokeWeight(6);
+		if (hueC.checked()) stroke(map(V.len(this.vel), maxSpeedS.value() / 10, maxSpeedS.value(), 0, 127, true), 255, 255);
+		else stroke(255);
+		point(this.pos[0], this.pos[1]);
 	}
 
 	update() {
@@ -175,7 +221,7 @@ class Boid {
 			V.random(this.temp);
 			V.sclAdd(this.vel, this.vel, this.temp, noiseS.value() * maxSpeedS.value() / 100);
 		}
-		limitVec(this.vel, maxSpeedS.value());
+		V.limit(this.vel, this.vel, maxSpeedS.value());
 
 		V.add(this.pos, this.pos, this.vel);
 
