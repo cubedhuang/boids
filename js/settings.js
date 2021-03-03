@@ -46,6 +46,11 @@ function initSettings() {
 	else hiddenButtonD = false;
 	hiddenButtonC = createCheckbox(" hide top right square (it still works)", hiddenButtonD).parent(cont);
 
+	let squareBoidD; exists = param("sqb") !== null;
+	if (exists) squareBoidD = param("sqb") === "true";
+	else squareBoidD = false;
+	squareBoidC = createCheckbox(" show boids as squares (much faster)", squareBoidD).parent(cont);
+
 	let directionD; exists = param("dir") !== null;
 	if (exists) directionD = param("dir") === "true";
 	else directionD = true;
@@ -86,8 +91,8 @@ function initSettings() {
 	else bounceD = false;
 	bounceC = createCheckbox(" bounce off of edges", bounceD).parent(cont);
 	
-	visionP = createP("boid vision: 50").parent(cont);
-	visionS = createSlider(0, 300, 50, 5).parent(cont);
+	visionP = createP("boid vision: 75").parent(cont);
+	visionS = createSlider(0, 300, 75, 5).parent(cont);
 	visionS.elt.value = parseInt(param("vis")) || visionS.elt.value;
 	
 	alignP = createP("alignment force: 1").parent(cont);
@@ -134,6 +139,7 @@ function initSettings() {
 
 	boidsS.changed(updatePageURL);
 	hiddenButtonC.changed(updatePageURL);
+	squareBoidC.changed(updatePageURL);
 	directionC.changed(updatePageURL);
 	desiredC.changed(updatePageURL);
 	hueC.changed(updatePageURL);
@@ -170,6 +176,7 @@ function SURL() {
 
 	b += `&bds=${ boidsN }`;
 	b = ap(b, "hid", hiddenButtonC.checked());
+	b = ap(b, "sqb", squareBoidC.checked());
 	b = ap(b, "dir", directionC.checked());
 	b = ap(b, "des", desiredC.checked());
 	b = ap(b, "hue", hueC.checked());

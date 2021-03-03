@@ -8,7 +8,7 @@ let hideB;
 let menuOn = true;
 let hiddenButtonC;
 
-let pauseC, directionC, desiredC, hueC, vision1C, vision2C, neighborsC;
+let pauseC, squareBoidC, directionC, desiredC, hueC, vision1C, vision2C, neighborsC;
 let alignS, alignP,
 	cohesionS, cohesionP,
 	separationS, separationP;
@@ -47,6 +47,8 @@ function setup() {
 	background(31);
 
 	flock = new Flock(DEFAULT_BOIDS);
+
+	flock.update();
 }
 
 function draw() {
@@ -74,7 +76,7 @@ function draw() {
 			flock.update();
 			nextFrame = false;
 		}
-	
+
 		flock.draw();
 	}
 
@@ -118,7 +120,7 @@ function draw() {
 	}
 
 	if (debugC.checked()) {
-		fpsA.push(1000 / deltaTime);
+		fpsA.push(frameRate());
 		let fps = fpsA.reduce((a, v) => a + v, 0) / fpsA.length;
 		if (fpsA.length > fps) fpsA.shift();
 		fpsP.html("fps: " + fps.toFixed(1));

@@ -1,23 +1,3 @@
-function findInCircle(quadtree, x, y, radius) {
-	const result = [],
-	radius2 = radius * radius,
-	accept = d => d !== this && result.push(d);
-
-	quadtree.visit(function(node, x1, y1, x2, y2) {
-	if (node.length) {
-		return x1 >= x + radius || y1 >= y + radius || x2 < x - radius || y2 < y - radius;
-	}
-
-	const dx = +quadtree._x.call(null, node.data) - x,
-			dy = +quadtree._y.call(null, node.data) - y;
-		if (dx * dx + dy * dy < radius2) {
-			do { accept(node.data); } while (node = node.next);
-		}
-	});
-	
-	return result;
-}
-
 class Boid {
 	constructor (index) {
 		this.index = index;
@@ -60,7 +40,7 @@ class Boid {
 			let d;
 			if (this.index > boid.index) {
 				let i = boid.neighbors.indexOf(this);
-				if (i + 1) {
+				if (~i) {
 					d = boid.dists[i];
 				} else return;
 			} else d = V.sqrDist(this.pos, boid.pos);
@@ -194,7 +174,7 @@ class Boid {
 			stroke(127, 255, 255, 63);
 
 			for (const boid of this.neighbors) {
-				if (boid.index > this.index && V.sqrDist(this.pos, boid.pos) <= sqVis)
+				if (boid.index > this.index)
 					line(this.pos[0], this.pos[1], boid.pos[0], boid.pos[1]);
 			}
 		}
