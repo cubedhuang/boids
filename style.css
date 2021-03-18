@@ -65,10 +65,6 @@ body {
 	transform: translateX(100%);
 }
 
-.hidden-o {
-	display: none;
-}
-
 h3 {
 	font-size: 1.6em;
 	margin-bottom: 12px;
@@ -263,6 +259,17 @@ button:active {
 
 button.copied {
 	border: 2px solid #0ff4;
+}
+
+.resetters * {
+	float: left;
+	margin-right: 10px;
+}
+
+.resetters::after {
+	content: "";
+	clear: both;
+	display: table;
 }
 
 /* nexter */

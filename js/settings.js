@@ -1,201 +1,153 @@
-function initSettings() {
-	cont = select('#container');
+const opt = new Vue({
+	el: "#container",
 
-	cont.mouseOver(() => mouseIsOver = false);
-	cont.mouseOut(() => mouseIsOver = true);
+	data: {
+		menu: true,
+		paused: false,
+		rboids: 250,
 
-	createElement("h3", "boids").parent(cont);
-	createP(`left and right click to move the boids, or just watch their flocking patterns!
-		<br>double click to make an explosion
-		<br>middle click or click in the top right to toggle this menu`).parent(cont);
+		toggle: false,
+		squares: false,
+		direction: true,
+		desired: false,
+		hues: true,
+		areas: false,
+		outlines: false,
+		neighbors: false,
+		rtrail: 0,
 
-	pauseC = createCheckbox(" ", false).parent(cont);
-	pauseC.id("pauser");
+		bounce: false,
+		rvision: 75,
+		ralignment: 1,
+		rcohesion: 1,
+		rseparation: 1,
+		rmaxForce: 0.2,
+		rmaxSpeed: 8,
+		rdrag: 0,
+		rnoise: 0,
 
-	nextB = createButton("next frame").parent(pauseC);
-	nextB.class("nexter");
-	nextB.mousePressed(() => nextFrame = true);
+		debug: false,
+		hidden: false,
+		indices: false,
+		quadtree: false,
 
-	// shareB = createButton("share your settings!").parent(cont);
-	resetB = createButton("reset simulation").parent(cont);
-	resetB.mousePressed(() => {
-		updatePageURL(window.location.href.split('?')[0]);
-		location.reload();
-	})
+		special: {
+			rerender: 0,
+			encode: {
+				menu: "a",
+				paused: "b",
+				rboids: "c",
+			
+				toggle: "d",
+				squares: "e",
+				direction: "f",
+				desired: "g",
+				hues: "h",
+				areas: "i",
+				outlines: "j",
+				neighbors: "k",
+				rtrail: "l",
+			
+				bounce: "m",
+				rvision: "n",
+				ralignment: "o",
+				rcohesion: "p",
+				rseparation: "q",
+				rmaxForce: "r",
+				rmaxSpeed: "s",
+				rdrag: "t",
+				rnoise: "u",
+			
+				debug: "v",
+				hidden: "w",
+				indices: "x",
+				quadtree: "y",
+			},
+			fpsA: [],
+			fps: 60,
+		},
+	},
 
-	// shareB.mousePressed(e => {
-	// 	copiedText = 1;
-	// 	shareB.html("copied link!");
-	// 	shareB.class("copied");
-	// 	const el = document.createElement('textarea');
-	// 	el.value = SURL();
-	// 	document.body.appendChild(el);
-	// 	el.select();
-	// 	document.execCommand('copy');
-	// 	document.body.removeChild(el);
-	// });
+	computed: {
+		boids() { return parseFloat(this.rboids )},
+		trail() { return parseFloat(this.rtrail )},
+		vision() { return parseFloat(this.rvision )},
+		alignment() { return parseFloat(this.ralignment )},
+		cohesion() { return parseFloat(this.rcohesion )},
+		separation() { return parseFloat(this.rseparation )},
+		maxForce() { return parseFloat(this.rmaxForce )},
+		maxSpeed() { return parseFloat(this.rmaxSpeed )},
+		drag() { return parseFloat(this.rdrag )},
+		noise() { return parseFloat(this.rnoise )},
+	},
+	
+	methods: {
+		restart() {
+			flock = new Flock(this.boids);
+		},
 
-	boidsP = createP("number of boids: " + DEFAULT_BOIDS).parent(cont);
-	boidsS = createSlider(10, 1500, DEFAULT_BOIDS, 10).parent(cont);
-	boidsS.elt.value = parseInt(param("bds")) || boidsS.elt.value;
+		reset() {
+			this.updateURL(window.location.href.split('?')[0]);
+			location.reload();
+		},
 
-	createElement("h4", "visual settings").parent(cont);
-	let exists;
-	let hiddenButtonD; exists = param("hid") !== null;
-	if (exists) hiddenButtonD = param("hid") === "true";
-	else hiddenButtonD = false;
-	hiddenButtonC = createCheckbox(" hide top right square (it still works)", hiddenButtonD).parent(cont);
+		next() {
+			nextFrame = true;
+		},
 
-	let squareBoidD; exists = param("sqb") !== null;
-	if (exists) squareBoidD = param("sqb") === "true";
-	else squareBoidD = false;
-	squareBoidC = createCheckbox(" show boids as squares (much faster)", squareBoidD).parent(cont);
+		fps() {
+			return fps.toFixed(1);
+		},
+		
+		getURL() {
+			let array = [window.location.href.split("?")[0] + "?"];
 
-	let directionD; exists = param("dir") !== null;
-	if (exists) directionD = param("dir") === "true";
-	else directionD = true;
-	directionC = createCheckbox(" show boid directions", directionD).parent(cont);
-	
-	let desiredD; exists = param("des") !== null;
-	if (exists) desiredD = param("des") === "true";
-	else desiredD = false;
-	desiredC = createCheckbox(" show boid desired directions", desiredD).parent(cont);
-	
-	let hueD; exists = param("hue") !== null;
-	if (exists) hueD = param("hue") === "true";
-	else hueD = true;
-	hueC = createCheckbox(" change hues to indicate speed", hueD).parent(cont);
-	
-	let vision1D; exists = param("vs1") !== null;
-	if (exists) vision1D = param("vs1") === "true";
-	else vision1D = false;
-	vision1C = createCheckbox(" show vision areas", vision1D).parent(cont);
-	
-	let vision2D; exists = param("vs2") !== null;
-	if (exists) vision2D = param("vs2") === "true";
-	else vision2D = false;
-	vision2C = createCheckbox(" show vision outlines", vision2D).parent(cont);
-	
-	let neighborsD; exists = param("nei") !== null;
-	if (exists) neighborsD = param("nei") === "true";
-	else neighborsD = false;
-	neighborsC = createCheckbox(" show visible neighbors", neighborsD).parent(cont);
-	
-	trailP = createP("trail opacity: 50").parent(cont);
-	trailS = createSlider(0, 120, 50, 5).parent(cont);
-	trailS.elt.value = parseInt(param("trl")) || trailS.elt.value;
-	
-	createElement("h4", "boid movement").parent(cont);
-	let bounceD; exists = param("bnc") !== null;
-	if (exists) bounceD = param("bnc") === "true";
-	else bounceD = false;
-	bounceC = createCheckbox(" bounce off of edges", bounceD).parent(cont);
-	
-	visionP = createP("boid vision: 75").parent(cont);
-	visionS = createSlider(0, 300, 75, 5).parent(cont);
-	visionS.elt.value = parseInt(param("vis")) || visionS.elt.value;
-	
-	alignP = createP("alignment force: 1").parent(cont);
-	alignS = createSlider(0, 4, 1, 0.1).parent(cont);
-	alignS.elt.value = parseFloat(param("aln")) || alignS.elt.value;
-	cohesionP = createP("cohesion force: 1").parent(cont);
-	cohesionS = createSlider(0, 4, 1, 0.1).parent(cont);
-	cohesionS.elt.value = parseFloat(param("csn")) || cohesionS.elt.value;
-	separationP = createP("separation force: 1").parent(cont);
-	separationS = createSlider(0, 4, 1, 0.1).parent(cont);
-	separationS.elt.value = parseFloat(param("sep")) || separationS.elt.value;
-	
-	maxForceP = createP("steering force: 0.2").parent(cont);
-	maxForceS = createSlider(0, 1, 0.2, 0.05).parent(cont);
-	maxForceS.elt.value = parseFloat(param("mxf")) || maxForceS.elt.value;
-	
-	maxSpeedP = createP("max speed: 8").parent(cont);
-	maxSpeedS = createSlider(0.5, 16, 8, 0.5).parent(cont);
-	maxSpeedS.elt.value = parseFloat(param("mxs")) || maxSpeedS.elt.value;
-	
-	noiseP = createP("movement randomness: 0").parent(cont);
-	noiseS = createSlider(0, 10, 0, 0.5).parent(cont);
-	noiseS.elt.value = parseFloat(param("noi")) || noiseS.elt.value;
+			const entries = Object.entries(this.$data);
+			for (const [key, value] of entries) {
+				if (key === "special") continue;
 
-	createElement("h4", "debug info").parent(cont);
-	debugC = createCheckbox(" show debug info", false).parent(cont);
-	debugC.elt.onclick = toggleDebug;
-	let debugDiv = createDiv().parent(cont);
-	debugDiv.class("hidden-o");
-	fpsP = createP("fps").parent(debugDiv);
-	hideBoidC = createCheckbox(" hide boids").parent(debugDiv);
-	indexC = createCheckbox(" show boid indices").parent(debugDiv);
-	qtC = createCheckbox(" show quadtree").parent(debugDiv);
+				const k = this.special.encode[key];
+				
+				if (typeof value === "boolean")
+					array.push(`${ k }=${ value ? "1" : "0" }`);
+				else array.push(`${ k }=${ value }`);
+			}
+		
+			return array.join("&");
+		},
 
-	function toggleDebug() {
-		if (debugC.checked()) debugDiv.removeClass("hidden-o");
-		else {
-			debugDiv.class("hidden-o");
-			mouseIsOver = true;
+		updateURL(val) {
+			window.history.replaceState({}, document.title, typeof val === "string" ? val : this.getURL());
+		},
+	},
+
+	created() {
+		setInterval(this.updateURL, 1000);
+
+		if (window.location.href.split("?").length < 2) {
+			this.updateURL();
+			return;
 		}
-	}
 
-	document.addEventListener("contextmenu", e => e.preventDefault());
+		function param(name) {
+			name = name.replace(/[\[\]]/g, "\\$&");
+			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+				results = regex.exec(window.location.href);
+			if (!results) return null;
+			if (!results[2]) return "";
+			return decodeURIComponent(results[2].replace(/\+/g, " "));
+		}
 
-	boidsS.changed(updatePageURL);
-	hiddenButtonC.changed(updatePageURL);
-	squareBoidC.changed(updatePageURL);
-	directionC.changed(updatePageURL);
-	desiredC.changed(updatePageURL);
-	hueC.changed(updatePageURL);
-	vision1C.changed(updatePageURL);
-	vision2C.changed(updatePageURL);
-	neighborsC.changed(updatePageURL);
-	trailS.changed(updatePageURL);
-	bounceC.changed(updatePageURL);
-	visionS.changed(updatePageURL);
-	alignS.changed(updatePageURL);
-	cohesionS.changed(updatePageURL);
-	separationS.changed(updatePageURL);
-	maxForceS.changed(updatePageURL);
-	maxSpeedS.changed(updatePageURL);
-	noiseS.changed(updatePageURL);
+		const entries = Object.entries(this.$data);
+		for (const [key, value] of entries) {
+			const p = param(this.special.encode[key]);
+			if (!p) continue;
 
-	updatePageURL();
-}
-
-function param(name, url = window.location.href) {
-	name = name.replace(/[\[\]]/g, '\\$&');
-	var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-		results = regex.exec(url);
-	if (!results) return null;
-	if (!results[2]) return '';
-	return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-
-function SURL() {
-	let b = window.location.href.split('?')[0] + "?";
-	function ap(str, p, value) {
-		return `${ str }&${ p }=${ value }`;
-	}
-
-	b += `&bds=${ boidsN }`;
-	b = ap(b, "hid", hiddenButtonC.checked());
-	b = ap(b, "sqb", squareBoidC.checked());
-	b = ap(b, "dir", directionC.checked());
-	b = ap(b, "des", desiredC.checked());
-	b = ap(b, "hue", hueC.checked());
-	b = ap(b, "vs1", vision1C.checked());
-	b = ap(b, "vs2", vision2C.checked());
-	b = ap(b, "nei", neighborsC.checked());
-	b = ap(b, "trl", trailS.value());
-	b = ap(b, "bnc", bounceC.checked());
-	b = ap(b, "vis", visionS.value());
-	b = ap(b, "aln", alignS.value());
-	b = ap(b, "csn", cohesionS.value());
-	b = ap(b, "sep", separationS.value());
-	b = ap(b, "mxf", maxForceS.value());
-	b = ap(b, "mxs", maxSpeedS.value());
-	b = ap(b, "noi", noiseS.value());
-
-	return b;
-}
-
-function updatePageURL(val) {
-	window.history.replaceState({}, document.title, typeof val === "string" ? val : SURL());
-}
+			if (typeof value === "boolean") {
+				this[key] = p === "1";
+			} else {
+				this[key] = parseFloat(p);
+			}
+		}
+	},
+});

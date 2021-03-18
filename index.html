@@ -7,7 +7,7 @@
 		
 		<meta property="description" content="2D flocking simulation!">
 		
-		<meta property="og:title" content="QT Boids Simulation">
+		<meta property="og:title" content="Boids Simulation">
 		<meta property="og:description" content="2D flocking simulation!">
 		<meta property="og:url" content="https://boids.cubedhuang.com/">
 		<meta property="og:image" content="https://cubedhuang.com/logo.png">
@@ -50,14 +50,130 @@
 	</head>
 
 	<body>
-		<div id="container"></div>
+		<div id="container">
+			<h3>boids</h3>
+
+			<p>
+				left and right click to move the boids, or just watch their flocking patterns! <br>
+				double click to make an explosion <br>
+				middle click or click in the top right to toggle this menu
+			</p>
+
+			<div id="pauser">
+				<input type="checkbox" id="pauseButton" v-model="paused">
+				<label for="pauseButton"> </label>
+				<button class="nexter" @click="next">next frame</button>
+			</div>
+
+			<div class="resetters">
+				<button @click="restart">restart simulation</button>
+				<button @click="reset">reset settings</button>
+			</div>
+
+			<p>number of boids: {{ boids }}</p>
+			<input type="range" min="25" max="1500" step="25" v-model="rboids">
+
+			<h4>visual settings</h4>
+			
+			<div>
+				<input type="checkbox" id="toggle" v-model="toggle">
+				<label for="toggle"> hide menu toggle (it still works)</label>
+			</div>
+			<div>
+				<input type="checkbox" id="squares" v-model="squares">
+				<label for="squares"> show boids as squares (faster)</label>
+			</div>
+			<div>
+				<input type="checkbox" id="direction" v-model="direction">
+				<label for="direction"> show boid directions</label>
+			</div>
+			<div>
+				<input type="checkbox" id="desired" v-model="desired">
+				<label for="desired"> show boid desired directions</label>
+			</div>
+			<div>
+				<input type="checkbox" id="hues" v-model="hues">
+				<label for="hues"> change hues to indicate speed</label>
+			</div>
+			<div>
+				<input type="checkbox" id="areas" v-model="areas">
+				<label for="areas"> show vision areas</label>
+			</div>
+			<div>
+				<input type="checkbox" id="outlines" v-model="outlines">
+				<label for="outlines"> show vision outlines</label>
+			</div>
+			<div>
+				<input type="checkbox" id="neighbors" v-model="neighbors">
+				<label for="neighbors"> show visible neighbors</label>
+			</div>
+			
+			<p>trail opacity: {{ trail }}</p>
+			<input type="range" min="0" max="120" step="5" v-model="rtrail">
+			
+			<h4>boid movement</h4>
+
+			<div>
+				<input type="checkbox" id="bounce" v-model="bounce">
+				<label for="bounce"> bounce off of edges</label>
+			</div>
+
+			<p>boid vision: {{ vision }}</p>
+			<input type="range" min="0" max="300" step="5" v-model="rvision">
+
+			<p>alignment force: {{ alignment }}</p>
+			<input type="range" min="0" max="4" step="0.1" v-model="ralignment">
+
+			<p>cohesion force: {{ cohesion }}</p>
+			<input type="range" min="0" max="4" step="0.1" v-model="rcohesion">
+			
+			<p>separation force: {{ separation }}</p>
+			<input type="range" min="0" max="4" step="0.1" v-model="rseparation">
+			
+			<p>steering force: {{ maxForce }}</p>
+			<input type="range" min="0" max="1" step="0.05" v-model="rmaxForce">
+			
+			<p>max speed: {{ maxSpeed }}</p>
+			<input type="range" min="0" max="16" step="0.5" v-model="rmaxSpeed">
+			
+			<p>drag: {{ drag }}</p>
+			<input type="range" min="0" max="0.05" step="0.005" v-model="rdrag">
+			
+			<p>movement randomness: {{ noise }}</p>
+			<input type="range" min="0" max="10" step="0.5" v-model="rnoise">
+			
+			<h4>debug info</h4>
+			<div>
+				<input type="checkbox" id="debug" v-model="debug">
+				<label for="debug">show debug info</label>
+			</div>
+
+			<div v-if="debug">
+				<p :key="special.rerender">fps: {{ special.fps.toFixed(1) }}</p>
+				<div>
+					<input type="checkbox" id="hidden" v-model="hidden">
+					<label for="hidden"> hide boids</label>
+				</div>
+				<div>
+					<input type="checkbox" id="indices" v-model="indices">
+					<label for="indices"> show boid indices</label>
+				</div>
+				<div>
+					<input type="checkbox" id="quadtree" v-model="quadtree">
+					<label for="quadtree"> show quadtree</label>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
 		<script src="./lib/d3-quadtree.min.js"></script>
 		<script src="./lib/hammer.min.js"></script>
 		<script src="./lib/p5.min.js"></script>
-		<script src="./js/v.js"></script>
-		<script src="./js/fboid.js"></script>
-		<script src="./js/fflock.js"></script>
 		<script src="./js/settings.js"></script>
+		<script src="./js/v.js"></script>
+		<script src="./js/boid.js"></script>
+		<script src="./js/flock.js"></script>
 		<script src="./js/script.js"></script>
 	</body>
 </html>

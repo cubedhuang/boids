@@ -1,12 +1,11 @@
-const accessorX = d => d.pos[0];
-const accessorY= d => d.pos[1];
-
 class Flock {
 	constructor(boids) {
 		this.boids = [];
+		this.neighbors = [];
+		this.dists = [];
 
 		for (let i = 0; i < boids; i++) {
-			this.boids.push(new Boid(i));
+			this.boids.push(B.create(i));
 		}
 
 		this.quadtree();
@@ -14,39 +13,40 @@ class Flock {
 
 	update() {
 		for (const boid of this.boids) {
-			boid.flock(this);
-		}
-		for (const boid of this.boids) {
-			boid.update();
+			B.update(boid);
 		}
 		this.quadtree();
+		for (const boid of this.boids) {
+			B.flock(boid, flock);
+		}
 	}
 
 	quadtree() {
 		this.qt = d3.quadtree()
-			.extent([[0, 0], [width, height]])
-			.x(accessorX)
-			.y(accessorY)
+			.extent([[-1, -1], [width + 1, height + 1]])
 			.addAll(this.boids);
 	}
 
 	draw() {
 		for (const boid of this.boids) {
-			boid.showData();
+			if (opt.paused && opt.neighbors) {
+				B.neighbors(boid, this);
+			}
+			B.showData(boid);
 		}
 		
-		if (!hideBoidC.checked()) {
+		if (!opt.hidden) {
 			for (const boid of this.boids) {
-				boid.showSelf();
+				B.showBoid(boid);
 			}
 		}
 
-		if (qtC.checked()) {
+		if (opt.quadtree) {
 			strokeWeight(0.5);
 			stroke(0, 255, 255, 191);
 			noFill();
 			this.qt.visit((node, x0, y0, x1, y1) => {
-				rect(x0, y0, x1 - x0, y1 - y0);
+				if (node.length) rect(x0, y0, x1 - x0, y1 - y0);
 			});
 		}
 	}
@@ -56,7 +56,7 @@ class Flock {
 			this.boids = this.boids.slice(0, n);
 		} else {
 			for (let i = this.boids.length; i < n; i++) {
-				this.boids.push(new Boid(i));
+				this.boids.push(B.create(i));
 			}
 		}
 	}

@@ -5,11 +5,11 @@
 
 const V = {
 	create() {
-		return new Float32Array(2);
+		return [0, 0];
 	},
 
 	from(x, y) {
-		let out = new Float32Array(2);
+		let out = [0, 0];
 		out[0] = x;
 		out[1] = y;
 		return out;
@@ -81,10 +81,21 @@ const V = {
 		return out;
 	},
 
-	limit(out, a, b) {
+	max(out, a, b) {
 		let l1 = V.sqrLen(a);
 		let l2 = b * b;
 		if (l1 <= l2) {
+			V.copy(out, a);
+			return out;
+		}
+		V.setLen(out, a, b);
+		return out;
+	},
+
+	min(out, a, b) {
+		let l1 = V.sqrLen(a);
+		let l2 = b * b;
+		if (l1 >= l2) {
 			V.copy(out, a);
 			return out;
 		}
@@ -116,4 +127,8 @@ const V = {
 			y = b[1] - a[1];
 		return x * x + y * y;
 	},
+
+	dot(a, b) {
+		return a[0] * b[0] + a[1] * b[1];
+	}
 };

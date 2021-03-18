@@ -1,88 +1,65 @@
+const bg = 23;
+
 let flock;
 
-const DEFAULT_BOIDS = 250;
-let boidsS, boidsP, boidsN = DEFAULT_BOIDS;
-
-let cont;
-let hideB;
-let menuOn = true;
-let hiddenButtonC;
-
-let pauseC, squareBoidC, directionC, desiredC, hueC, vision1C, vision2C, neighborsC;
-let alignS, alignP,
-	cohesionS, cohesionP,
-	separationS, separationP;
-let trailS, trailP;
-
-let bounceC;
-let visionS, visionP;
-let maxForceS, maxForceP, maxSpeedS, maxSpeedP;
-let noiseS, noiseP;
 let mouseForce;
 let vis, sqVis, dbVis;
 
+let cont;
 let mouseIsOver = true;
 
 let explode = 0;
 let explodePos = V.create();
 
-let shareB, copiedText = 0;
-
-let debugC;
-let fpsP, fpsA = [];
-let hideBoidC;
-let indexC;
-let qtC;
-
-let nextB;
+let fps = 0, fpsA = [];
 let nextFrame = false;
 
 function setup() {
-	createCanvas(windowWidth, windowHeight);
+	cont = select('#container');
+
+	cont.mouseOver(() => mouseIsOver = false);
+	cont.mouseOut(() => mouseIsOver = true);
+
+	if (!opt.menu) cont.class("hidden");
+
+	document.addEventListener("contextmenu", e => e.preventDefault());
+
+	createCanvas(windowWidth, windowHeight,);
 	
 	colorMode(HSB, 255);
 
-	initSettings();
+	background(bg);
 
-	background(31);
-
-	flock = new Flock(DEFAULT_BOIDS);
+	flock = new Flock(opt.boids);
 
 	flock.update();
 }
 
 function draw() {
-	if (!pauseC.checked()) {
-		background(31, 31, 31, 255 - trailS.value());
-
-		mouseForce = maxSpeedS.value() *
-			maxForceS.value() *
-			(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
-		vis = visionS.value();
+	mouseForce = opt.maxSpeed *
+			opt.maxForce *
+			(opt.alignment + opt.cohesion + opt.separation + 1) / 12;
+		vis = opt.vision;
 		sqVis = vis * vis;
 		dbVis = vis * 2;
-	
+
+	if (!opt.paused) {
+		background(bg, bg, bg, 255 - opt.trail);
+
 		flock.update();
-		flock.draw();
 	} else {
-		background(31, 31, 31, 255);
+		background(bg, bg, bg, 255);
 
 		if (nextFrame) {
-			mouseForce = maxSpeedS.value() * maxForceS.value() *
-				(alignS.value() + cohesionS.value() + separationS.value() + 1) / 12;
-			sqVis = visionS.value() * visionS.value();
-			dbVis = visionS.value() * 2;
-			
 			flock.update();
 			nextFrame = false;
 		}
-
-		flock.draw();
 	}
 
-	if (boidsN !== boidsS.value()) {
-		flock.resize(boidsS.value());
-		boidsN = boidsS.value();
+	flock.draw();
+
+	if (flock.boids.length !== opt.boids) {
+		flock.resize(opt.boids);
 	}
 
 	if (explode > 0.001) {
@@ -95,46 +72,33 @@ function draw() {
 		explode *= 0.9;
 	}
 
-	if (copiedText > 0.001) {
-		copiedText *= 0.9;
-		if (copiedText <= 0.001) {
-			shareB.html("share your settings!");
-			shareB.removeClass("copied");
-		}
+	if (!opt.toggle) {
+		stroke(255, 63);
+		strokeWeight(6);
+		let sx = width - (opt.menu ? 40 : 35);
+		let ex = width - (opt.menu ? 15 : 10);
+		line(sx, 10, ex, 10);
+		line(sx, 20, ex, 20);
+		line(sx, 30, ex, 30);
 	}
 
-	boidsP.html("number of boids: " + boidsS.value());
-	trailP.html("trail opacity: " + trailS.value());
-	noiseP.html("movement randomness: " + noiseS.value());
-	visionP.html("boid vision: " + visionS.value());
-	alignP.html("alignment force: " + alignS.value());
-	cohesionP.html("cohesion force: " + cohesionS.value());
-	separationP.html("separation force: " + separationS.value());
-	maxForceP.html("steering force: " + maxForceS.value());
-	maxSpeedP.html("max speed: " + maxSpeedS.value());
-
-	if (!hiddenButtonC.checked()) {
-		noStroke();
-		fill(0);
-		rect(width - 40, 0, 40, 40);
-	}
-
-	if (debugC.checked()) {
-		fpsA.push(frameRate());
-		let fps = fpsA.reduce((a, v) => a + v, 0) / fpsA.length;
-		if (fpsA.length > fps) fpsA.shift();
-		fpsP.html("fps: " + fps.toFixed(1));
+	if (opt.debug) {
+		opt.special.fpsA.push(frameRate());
+		opt.special.fps = opt.special.fpsA.reduce((a, v) => a + v, 0) / opt.special.fpsA.length;
+		if (opt.special.fpsA.length > opt.special.fps) opt.special.fpsA.shift();
+		opt.special.rerender++;
 	}
 }
 
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
+	background(bg, bg, bg, 255);
 }
 
 function toggleMenu() {
-	menuOn = !menuOn;
+	opt.menu = !opt.menu;
 
-	if (menuOn) cont.removeClass("hidden");
+	if (opt.menu) cont.removeClass("hidden");
 	else {
 		cont.class("hidden");
 		mouseIsOver = true;
@@ -142,12 +106,9 @@ function toggleMenu() {
 }
 
 function mousePressed(e) {
-	if (e.button === 0 && mouseX >= width - 40 && mouseY <= 40) {
-		toggleMenu();
-		e.preventDefault();
-	}
-
-	if (e && e.button === 1) {
+	if (e && (
+		(e.button === 0 && mouseX >= width - 50 && mouseY <= 40) ||
+		(e.button === 1))) {
 		toggleMenu();
 		e.preventDefault();
 	}
