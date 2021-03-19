@@ -56,7 +56,8 @@
 			<p>
 				left and right click to move the boids, or just watch their flocking patterns! <br>
 				double click to make an explosion <br>
-				middle click or click in the top right to toggle this menu
+				middle click or click in the top right to toggle this menu <br>
+				press space to pause, and use . to advance one frame
 			</p>
 
 			<div id="pauser">
@@ -133,11 +134,14 @@
 			<p>steering force: {{ maxForce }}</p>
 			<input type="range" min="0" max="1" step="0.05" v-model="rmaxForce">
 			
+			<p>min speed: {{ minSpeed }}</p>
+			<input type="range" min="0" :max="maxSpeed" step="0.25" v-model="rminSpeed">
+
 			<p>max speed: {{ maxSpeed }}</p>
-			<input type="range" min="0" max="16" step="0.5" v-model="rmaxSpeed">
+			<input type="range" min="0" max="25" step="0.5" v-model="rmaxSpeed">
 			
 			<p>drag: {{ drag }}</p>
-			<input type="range" min="0" max="0.05" step="0.005" v-model="rdrag">
+			<input type="range" min="0" max="0.05" step="0.0025" v-model="rdrag">
 			
 			<p>movement randomness: {{ noise }}</p>
 			<input type="range" min="0" max="10" step="0.5" v-model="rnoise">

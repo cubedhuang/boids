@@ -163,6 +163,10 @@ const B = (() => {
 				V.random(temp);
 				V.sclAdd(tvel, tvel, temp, opt.noise * opt.maxSpeed / 100);
 			}
+			if (opt.minSpeed) {
+				if (V.sqrLen(tvel) === 0) V.random(tvel, 0.1);
+				V.min(tvel, tvel, opt.minSpeed);
+			}
 			V.max(tvel, tvel, opt.maxSpeed);
 
 			V.add(boid, boid, tvel);

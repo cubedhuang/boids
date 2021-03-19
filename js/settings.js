@@ -4,7 +4,7 @@ const opt = new Vue({
 	data: {
 		menu: true,
 		paused: false,
-		rboids: 250,
+		rboids: 300,
 
 		toggle: false,
 		squares: false,
@@ -22,8 +22,9 @@ const opt = new Vue({
 		rcohesion: 1,
 		rseparation: 1,
 		rmaxForce: 0.2,
-		rmaxSpeed: 8,
-		rdrag: 0,
+		rminSpeed: 2,
+		rmaxSpeed: 10,
+		rdrag: 0.005,
 		rnoise: 0,
 
 		debug: false,
@@ -54,18 +55,26 @@ const opt = new Vue({
 				rcohesion: "p",
 				rseparation: "q",
 				rmaxForce: "r",
-				rmaxSpeed: "s",
-				rdrag: "t",
-				rnoise: "u",
+				rminSpeed: "s",
+				rmaxSpeed: "t",
+				rdrag: "u",
+				rnoise: "v",
 			
-				debug: "v",
-				hidden: "w",
-				indices: "x",
-				quadtree: "y",
+				debug: "w",
+				hidden: "x",
+				indices: "y",
+				quadtree: "z",
 			},
 			fpsA: [],
 			fps: 60,
 		},
+	},
+
+	watch: {
+		maxSpeed(v) {
+			if (v < this.rminSpeed)
+				this.rminSpeed = v;
+		}
 	},
 
 	computed: {
@@ -76,6 +85,7 @@ const opt = new Vue({
 		cohesion() { return parseFloat(this.rcohesion )},
 		separation() { return parseFloat(this.rseparation )},
 		maxForce() { return parseFloat(this.rmaxForce )},
+		minSpeed() { return parseFloat(this.rminSpeed )},
 		maxSpeed() { return parseFloat(this.rmaxSpeed )},
 		drag() { return parseFloat(this.rdrag )},
 		noise() { return parseFloat(this.rnoise )},
@@ -140,7 +150,7 @@ const opt = new Vue({
 
 		const entries = Object.entries(this.$data);
 		for (const [key, value] of entries) {
-			const p = param(this.special.encode[key]);
+			const p = param(this.special.encode[key] || "");
 			if (!p) continue;
 
 			if (typeof value === "boolean") {

@@ -114,6 +114,18 @@ function mousePressed(e) {
 	}
 }
 
+function keyPressed() {
+	if (keyCode === 32) {
+		opt.paused = !opt.paused;
+		return false;
+	}
+
+	if (keyCode === 190 && opt.paused) {
+		nextFrame = true;
+		return false;
+	}
+}
+
 new Hammer(document).on("doubletap", function() {
 	if (mouseIsOver) {
 		explode = 1;

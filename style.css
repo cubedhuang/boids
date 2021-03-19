@@ -159,7 +159,7 @@ label::before{
 
 	position: absolute;
 	top: 3px;
-	left: -15px;
+	left: -20px;
 }
 input[type="checkbox"]:hover + label::before {
 	background: #fff2;
@@ -179,7 +179,7 @@ label::after {
 	opacity: 0;
 
 	position: absolute;
-	left: -12px;
+	left: -17px;
 	top: 7px;
 }
 input[type="checkbox"]:checked + label::after {
