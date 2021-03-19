@@ -46,7 +46,7 @@ class Flock {
 			stroke(0, 255, 255, 191);
 			noFill();
 			this.qt.visit((node, x0, y0, x1, y1) => {
-				if (node.length) rect(x0, y0, x1 - x0, y1 - y0);
+				rect(x0, y0, x1 - x0, y1 - y0);
 			});
 		}
 	}
