@@ -4,7 +4,7 @@ const opt = new Vue({
 	data: {
 		menu: true,
 		paused: false,
-		rboids: 300,
+		rboids: 400,
 
 		toggle: false,
 		squares: false,
@@ -16,6 +16,7 @@ const opt = new Vue({
 		neighbors: false,
 		rtrail: 0,
 
+		particle: false,
 		bounce: false,
 		rvision: 75,
 		ralignment: 1,
@@ -50,20 +51,21 @@ const opt = new Vue({
 				rtrail: "l",
 			
 				bounce: "m",
-				rvision: "n",
-				ralignment: "o",
-				rcohesion: "p",
-				rseparation: "q",
-				rmaxForce: "r",
-				rminSpeed: "s",
-				rmaxSpeed: "t",
-				rdrag: "u",
-				rnoise: "v",
-			
-				debug: "w",
-				hidden: "x",
-				indices: "y",
-				quadtree: "z",
+				particle: "n",
+				rvision: "o",
+				ralignment: "p",
+				rcohesion: "q",
+				rseparation: "r",
+				rmaxForce: "s",
+				rminSpeed: "t",
+				rmaxSpeed: "u",
+				rdrag: "v",
+				rnoise: "w",
+
+				debug: "x",
+				hidden: "y",
+				indices: "z",
+				quadtree: "aa"
 			},
 			fpsA: [],
 			fps: 60,
@@ -78,22 +80,22 @@ const opt = new Vue({
 	},
 
 	computed: {
-		boids() { return parseFloat(this.rboids )},
-		trail() { return parseFloat(this.rtrail )},
-		vision() { return parseFloat(this.rvision )},
-		alignment() { return parseFloat(this.ralignment )},
-		cohesion() { return parseFloat(this.rcohesion )},
-		separation() { return parseFloat(this.rseparation )},
-		maxForce() { return parseFloat(this.rmaxForce )},
-		minSpeed() { return parseFloat(this.rminSpeed )},
-		maxSpeed() { return parseFloat(this.rmaxSpeed )},
-		drag() { return parseFloat(this.rdrag )},
-		noise() { return parseFloat(this.rnoise )},
+		boids() { return parseFloat(this.rboids) },
+		trail() { return parseFloat(this.rtrail) },
+		vision() { return parseFloat(this.rvision) },
+		alignment() { return parseFloat(this.ralignment) },
+		cohesion() { return parseFloat(this.rcohesion) },
+		separation() { return parseFloat(this.rseparation) },
+		maxForce() { return parseFloat(this.rmaxForce) },
+		minSpeed() { return parseFloat(this.rminSpeed) },
+		maxSpeed() { return parseFloat(this.rmaxSpeed) },
+		drag() { return parseFloat(this.rdrag) },
+		noise() { return parseFloat(this.rnoise) },
 	},
 	
 	methods: {
 		restart() {
-			flock = new Flock(this.boids);
+			flock.reset();
 		},
 
 		reset() {

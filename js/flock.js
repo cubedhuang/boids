@@ -1,14 +1,7 @@
 class Flock {
 	constructor(boids) {
-		this.boids = [];
-		this.neighbors = [];
-		this.dists = [];
-
-		for (let i = 0; i < boids; i++) {
-			this.boids.push(B.create(i));
-		}
-
-		this.quadtree();
+		this.length = boids;
+		this.reset();
 	}
 
 	update() {
@@ -16,9 +9,14 @@ class Flock {
 			B.update(boid);
 		}
 		this.quadtree();
-		for (const boid of this.boids) {
-			B.flock(boid, flock);
-		}
+		if (opt.particle || opt.vision === 0)
+			for (const boid of this.boids)
+				B.interact(boid, flock);
+		else
+			for (const boid of this.boids) {
+				B.flock(boid, flock);
+				B.interact(boid);
+			}
 	}
 
 	quadtree() {
@@ -29,10 +27,36 @@ class Flock {
 
 	draw() {
 		for (const boid of this.boids) {
-			if (opt.paused && opt.neighbors) {
+			if ((opt.paused || opt.particle) && opt.neighbors) {
 				B.neighbors(boid, this);
 			}
 			B.showData(boid);
+		}
+
+		if (opt.direction) {
+			let m = 50 / opt.maxSpeed;
+
+			drawingContext.lineWidth = 1;
+			drawingContext.strokeStyle = "rgba(255, 255, 255, 0.25)";
+			drawingContext.beginPath();
+			for (const boid of this.boids) {
+				drawingContext.moveTo(boid[0], boid[1]);
+				drawingContext.lineTo(boid[0] + boid[2] * m, boid[1] + boid[3] * m);
+			}
+			drawingContext.stroke();
+		}
+
+		if (opt.desired) {
+			let m = 10 / opt.maxForce;
+
+			drawingContext.lineWidth = 1;
+			drawingContext.strokeStyle = "rgba(255, 0, 127, 0.5)";
+			drawingContext.beginPath();
+			for (const boid of this.boids) {
+				drawingContext.moveTo(boid[0], boid[1]);
+				drawingContext.lineTo(boid[0] + boid[4] * m, boid[1] + boid[5] * m);
+			}
+			drawingContext.stroke();
 		}
 		
 		if (!opt.hidden) {
@@ -59,5 +83,15 @@ class Flock {
 				this.boids.push(B.create(i));
 			}
 		}
+	}
+
+	reset() {
+		this.boids = [];
+
+		for (let i = 0; i < this.length; i++) {
+			this.boids.push(B.create(i));
+		}
+
+		this.quadtree();
 	}
 }

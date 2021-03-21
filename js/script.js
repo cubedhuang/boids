@@ -37,11 +37,11 @@ function setup() {
 
 function draw() {
 	mouseForce = opt.maxSpeed *
-			opt.maxForce *
-			(opt.alignment + opt.cohesion + opt.separation + 1) / 12;
-		vis = opt.vision;
-		sqVis = vis * vis;
-		dbVis = vis * 2;
+		opt.maxForce *
+		(opt.alignment + opt.cohesion + opt.separation + 1) / 12;
+	vis = opt.vision;
+	sqVis = vis * vis;
+	dbVis = vis * 2;
 
 	if (!opt.paused) {
 		background(bg, bg, bg, 255 - opt.trail);

@@ -30,15 +30,13 @@ const B = (() => {
 
 	return {
 		create(index) {
-			let out = [];
-			out[0] = random(width);
-			out[1] = random(height);
-			V.random(temp, random(opt.maxSpeed));
-			out[2] = temp[0];
-			out[3] = temp[1];
-			out[4] = 0;
-			out[5] = 0;
-			out[6] = index;
+			let out = [
+				random(width), // position
+				random(height),
+				0, 0, // velocity
+				0, 0, // acceleration
+				index
+			];
 			return out;
 		},
 
@@ -50,27 +48,28 @@ const B = (() => {
 				if (node.length) {
 					return x1 >= boid[0] + vis || y1 >= boid[1] + vis || x2 < boid[0] - vis || y2 < boid[1] - vis;
 				}
-	
-				let other = node.data;
-				let d = V.sqrDist(boid, other);
+
+				let d = V.sqrDist(boid, node.data);
 				if (d < sqVis) {
 					do {
-						if (boid !== other) {
-							ns.push(other);
+						if (boid !== node.data) {
+							ns.push(node.data);
 							ds.push(d);
 						}
-					} while (other = node.next?.data);
+					} while (node = node.next);
 				}
 			});
 
 			if (opt.neighbors) {
-				strokeWeight(1);
-				stroke(127, 255, 255, 63);
-	
+				drawingContext.lineWidth = 1;
+				drawingContext.strokeStyle = "rgba(0, 255, 255, 0.25)";
+				drawingContext.beginPath();
 				for (const other of ns) {
-					if (other[6] > boid[6])
-						line(boid[0], boid[1], other[0], other[1]);
+					if (other[6] <= boid[6]) continue;
+					drawingContext.moveTo(boid[0], boid[1]);
+					drawingContext.lineTo(other[0], other[1]);
 				}
+				drawingContext.stroke();
 			}
 
 			return [ns, ds];
@@ -107,18 +106,29 @@ const B = (() => {
 				V.scale(csn, csn, 1 / ns.length);
 				V.sub(csn, csn, boid);
 				V.setLen(csn, csn, opt.maxSpeed);
-				V.sub(csn, csn, vel(boid));
+				V.sub(csn, csn, temp);
 				V.max(csn, csn, opt.maxForce);
 				
 				V.setLen(sep, sep, opt.maxSpeed);
-				V.sub(sep, sep, vel(boid));
+				V.sub(sep, sep, temp);
 				V.max(sep, sep, opt.maxForce);
 			}
 	
 			V.sclAdd(tacc, tacc, aln, opt.alignment);
 			V.sclAdd(tacc, tacc, csn, opt.cohesion);
 			V.sclAdd(tacc, tacc, sep, opt.separation);
-	
+
+			boid[4] = tacc[0];
+			boid[5] = tacc[1];
+		},
+
+		interact(boid) {
+			if (opt.particle) {
+				boid[4] = 0;
+				boid[5] = 0;
+			}
+			V.zero(tacc);
+
 			if (mouseIsOver && mouseIsPressed) {
 				V.set(mvec, mouseX, mouseY);
 	
@@ -147,8 +157,8 @@ const B = (() => {
 				V.sub(tacc, tacc, evec);
 			}
 
-			boid[4] = tacc[0];
-			boid[5] = tacc[1];
+			boid[4] += tacc[0];
+			boid[5] += tacc[1];
 		},
 
 		update(boid) {
@@ -223,32 +233,16 @@ const B = (() => {
 
 		showData(boid) {
 			if (opt.areas || opt.outlines) {
-				if (opt.areas) fill(255, 4);
+				if (opt.areas) fill(255, 3);
 				else noFill();
 	
 				if (opt.outlines) {
 					strokeWeight(0.5);
-					stroke(255, 80);
+					stroke(255, 63);
 				}
 				else noStroke();
 				
 				ellipse(boid[0], boid[1], dbVis, dbVis);
-			}
-			
-			if (opt.direction) {
-				strokeWeight(1);
-				stroke(255, 63);
-				V.sclAdd(tvel, boid, vel(boid), 50 / opt.maxSpeed);
-				line(boid[0], boid[1], tvel[0], tvel[1]);
-			}
-	
-			if (opt.desired) {
-				if (V.sqrLen(acc(boid))) {
-					strokeWeight(2);
-					stroke(239, 255, 255, 127);
-					V.sclAdd(tacc, boid, acc(boid), 10 / opt.maxForce);
-					line(boid[0], boid[1], tacc[0], tacc[1]);
-				}
 			}
 		}
 	};

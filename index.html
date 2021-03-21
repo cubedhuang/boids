@@ -72,7 +72,7 @@
 			</div>
 
 			<p>number of boids: {{ boids }}</p>
-			<input type="range" min="25" max="1500" step="25" v-model="rboids">
+			<input type="range" min="25" max="2000" step="25" v-model="rboids">
 
 			<h4>visual settings</h4>
 			
@@ -113,6 +113,11 @@
 			<input type="range" min="0" max="120" step="5" v-model="rtrail">
 			
 			<h4>boid movement</h4>
+
+			<div>
+				<input type="checkbox" id="particle" v-model="particle">
+				<label for="particle"> particle mode</label>
+			</div>
 
 			<div>
 				<input type="checkbox" id="bounce" v-model="bounce">
@@ -169,8 +174,7 @@
 			</div>
 		</div>
 
-		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-
+		<script src="./lib/vue.min.js"></script>
 		<script src="./lib/d3-quadtree.min.js"></script>
 		<script src="./lib/hammer.min.js"></script>
 		<script src="./lib/p5.min.js"></script>
