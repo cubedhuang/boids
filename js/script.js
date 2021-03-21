@@ -20,8 +20,6 @@ function setup() {
 	cont.mouseOver(() => mouseIsOver = false);
 	cont.mouseOut(() => mouseIsOver = true);
 
-	if (!opt.menu) cont.class("hidden");
-
 	document.addEventListener("contextmenu", e => e.preventDefault());
 
 	createCanvas(windowWidth, windowHeight,);
@@ -95,21 +93,11 @@ function windowResized() {
 	background(bg, bg, bg, 255);
 }
 
-function toggleMenu() {
-	opt.menu = !opt.menu;
-
-	if (opt.menu) cont.removeClass("hidden");
-	else {
-		cont.class("hidden");
-		mouseIsOver = true;
-	}
-}
-
 function mousePressed(e) {
 	if (e && (
 		(e.button === 0 && mouseX >= width - 50 && mouseY <= 40) ||
 		(e.button === 1))) {
-		toggleMenu();
+		opt.menu = !opt.menu;
 		e.preventDefault();
 	}
 }

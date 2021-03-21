@@ -217,17 +217,17 @@ const B = (() => {
 
 			let c;
 			if (opt.hues)
-				c = color(map(V.len(vel(boid)), opt.maxSpeed / 10, opt.maxSpeed, 0, 127, true), 255, 255);
-			else c = color(255);
+				c = color(map(V.len(vel(boid)), opt.minSpeed, opt.maxSpeed, 0, 127, true), 255, 255);
+			else c = color(159);
 
 			if (!opt.squares) {
-				strokeWeight(6);
+				strokeWeight(4);
 				stroke(c);
 				point(boid[0], boid[1]);
 			} else {
 				noStroke();
 				fill(c);
-				rect(boid[0] - 3, boid[1] - 3, 6, 6);
+				rect(boid[0] - 2, boid[1] - 2, 4, 4);
 			}
 		},
 

@@ -4,7 +4,7 @@ const opt = new Vue({
 	data: {
 		menu: true,
 		paused: false,
-		rboids: 400,
+		rboids: 600,
 
 		toggle: false,
 		squares: false,

@@ -34,7 +34,7 @@ class Flock {
 		}
 
 		if (opt.direction) {
-			let m = 50 / opt.maxSpeed;
+			let m = 30 / opt.maxSpeed;
 
 			drawingContext.lineWidth = 1;
 			drawingContext.strokeStyle = "rgba(255, 255, 255, 0.25)";
