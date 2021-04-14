@@ -7,7 +7,6 @@ const opt = new Vue({
 		rboids: 1500,
 
 		toggle: false,
-		direction: false,
 		desired: false,
 		hues: true,
 		areas: false,
