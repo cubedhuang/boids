@@ -42,10 +42,6 @@ body {
 	transition: transform 0.5s;
 }
 
-/* #container :last-child {
-	margin-bottom: 30px;
-} */
-
 /* webkit scrollbar */
 ::-webkit-scrollbar {
 	width: 10px;
@@ -61,7 +57,6 @@ body {
 }
 
 .hidden {
-	transition: transform 0.5s;
 	transform: translateX(100%);
 }
 
@@ -98,6 +93,27 @@ p {
 select {
 	display: block;
 	padding: 5px 0;
+}
+
+/* header */
+
+header * {
+	overflow: auto;
+	display: inline-block;
+}
+
+.source {
+	color: #eee8;
+	text-decoration: none;
+	border-bottom: 2px solid #eee8;
+	transition: 0.2s border, 0.2s color;
+	margin-bottom: 16px;
+	margin-left: 4px;
+}
+
+.source:hover {
+	color: #eeef;
+	border-bottom: 2px solid transparent;
 }
 
 /* slider css */

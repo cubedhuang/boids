@@ -3,247 +3,216 @@
  * 2, 3 = velocity
  * 4, 5 = acceleration
  * 6 = index
+ * 7 = pixi shape
+ * 8 = shape mode
  */
 
-const B = (() => {
-	const temp = V.create();
+class Boid extends V2D {
+	constructor(index) {
+		super(random(g.width), random(g.height));
 
-	const tvel = V.create();
-	const tacc = V.create();
+		this.vel = V2D.random(random(opt.maxSpeed));
+		this.acc = new V2D();
 
-	const mvec = V.create();
-	const evec = V.create();
+		this.index = index;
 
-	const aln = V.create();
-	const csn = V.create();
-	const sep = V.create();
+		this.shape = new PIXI.Graphics();
+		this.shapeMode = null;
 
-	function vel(boid) {
-		V.set(temp, boid[2], boid[3]);
-		return temp;
+		this.desired = new PIXI.Graphics();
+		this.desired.clear();
+		this.desired.beginFill();
+		this.desired.lineStyle(2, hsv(0.9, 1, 1));
+		this.desired.moveTo(0, 0);
+		this.desired.lineTo(12, 0);
+		this.desired.endFill();
+		this.desired.alpha = 0;
+
+		app.stage.addChild(this.shape);
+		app.stage.addChild(this.desired);
 	}
 
-	function acc(boid) {
-		V.set(temp, boid[4], boid[5]);
-		return temp;
-	}
+	neighbors(flock) {
+		const cand = flock.candidates(this);
+		const ns = [];
+		const ds = [];
 
-	return {
-		create(index) {
-			let out = [
-				random(width), // position
-				random(height),
-				0, 0, // velocity
-				0, 0, // acceleration
-				index
-			];
-			return out;
-		},
+		let step = opt.accuracy === 0 ? 1 : Math.ceil(cand.length / opt.accuracy);
 
-		neighbors(boid, flock) {
-			let ns = [];
-			let ds = [];
-	
-			flock.qt.visit((node, x1, y1, x2, y2) => {
-				if (node.length) {
-					return x1 >= boid[0] + vis || y1 >= boid[1] + vis || x2 < boid[0] - vis || y2 < boid[1] - vis;
-				}
-
-				let d = V.sqrDist(boid, node.data);
-				if (d < sqVis) {
-					do {
-						if (boid !== node.data) {
-							ns.push(node.data);
-							ds.push(d);
-						}
-					} while (node = node.next);
-				}
-			});
-
-			if (opt.neighbors) {
-				drawingContext.lineWidth = 1;
-				drawingContext.strokeStyle = "rgba(0, 255, 255, 0.25)";
-				drawingContext.beginPath();
-				for (const other of ns) {
-					if (other[6] <= boid[6]) continue;
-					drawingContext.moveTo(boid[0], boid[1]);
-					drawingContext.lineTo(other[0], other[1]);
-				}
-				drawingContext.stroke();
-			}
-
-			return [ns, ds];
-		},
-
-		flock(boid, flock) {
-			boid[4] = 0;
-			boid[5] = 0;
-			
-			V.zero(tacc);
-			V.zero(aln);
-			V.zero(csn);
-			V.zero(sep);
-	
-			let [ns, ds] = this.neighbors(boid, flock);
-
-			let i = 0;
-
-			for (const other of ns) {
-				V.add(aln, aln, vel(other));
-				V.add(csn, csn, other);
-
-				V.sub(temp, boid, other);
-				V.sclAdd(sep, sep, temp, 1 / ds[i] || 1);
-
-				i++;
-			}
-
-			if (ns.length > 0) {
-				V.setLen(aln, aln, opt.maxSpeed);
-				V.sub(aln, aln, vel(boid));
-				V.max(aln, aln, opt.maxForce);
-
-				V.scale(csn, csn, 1 / ns.length);
-				V.sub(csn, csn, boid);
-				V.setLen(csn, csn, opt.maxSpeed);
-				V.sub(csn, csn, temp);
-				V.max(csn, csn, opt.maxForce);
-				
-				V.setLen(sep, sep, opt.maxSpeed);
-				V.sub(sep, sep, temp);
-				V.max(sep, sep, opt.maxForce);
-			}
-	
-			V.sclAdd(tacc, tacc, aln, opt.alignment);
-			V.sclAdd(tacc, tacc, csn, opt.cohesion);
-			V.sclAdd(tacc, tacc, sep, opt.separation);
-
-			boid[4] = tacc[0];
-			boid[5] = tacc[1];
-		},
-
-		interact(boid) {
-			if (opt.particle) {
-				boid[4] = 0;
-				boid[5] = 0;
-			}
-			V.zero(tacc);
-
-			if (mouseIsOver && mouseIsPressed) {
-				V.set(mvec, mouseX, mouseY);
-	
-				const d = V.sqrDist(mvec, boid);
-	
-				V.sub(mvec, mvec, boid);
-				V.setLen(mvec, mvec, 10000 / d || 1);
-				V.max(mvec, mvec, mouseForce);
-	
-				if (mouseButton === LEFT) {
-					V.add(tacc, tacc, mvec);
-				} else if (mouseButton === RIGHT) {
-					V.sub(tacc, tacc, mvec);
-				}
-			}
-	
-			if (explode > 0.001) {
-				V.copy(evec, explodePos);
-	
-				const d = V.sqrDist(evec, boid);
-	
-				V.sub(evec, evec, boid);
-				V.setLen(evec, evec, explode * 100000 / d || 1);
-				V.max(evec, evec, mouseForce * 3);
-	
-				V.sub(tacc, tacc, evec);
-			}
-
-			boid[4] += tacc[0];
-			boid[5] += tacc[1];
-		},
-
-		update(boid) {
-			tvel[0] = boid[2];
-			tvel[1] = boid[3];
-
-			V.add(tvel, tvel, acc(boid));
-			if (opt.drag) {
-				V.scale(tvel, tvel, 1 - opt.drag);
-			}
-			if (opt.noise) {
-				V.random(temp);
-				V.sclAdd(tvel, tvel, temp, opt.noise * opt.maxSpeed / 100);
-			}
-			if (opt.minSpeed) {
-				if (V.sqrLen(tvel) === 0) V.random(tvel, 0.1);
-				V.min(tvel, tvel, opt.minSpeed);
-			}
-			V.max(tvel, tvel, opt.maxSpeed);
-
-			V.add(boid, boid, tvel);
-
-			if (opt.bounce) {
-				let ran = false;
-				if (boid[0] < 0 || boid[0] > width) {
-					ran = true;
-					tvel[0] *= -1;
-				}
-				if (boid[1] < 0 || boid[1] > height) {
-					ran = true;
-					tvel[1] *= -1;
-				}
-				if (ran) {
-					boid[0] = constrain(boid[0], 0, width);
-					boid[1] = constrain(boid[1], 0, height);
-				}
-			} else {
-				if (boid[0] < 0) boid[0] = width;
-				if (boid[0] > width) boid[0] = 0;
-				if (boid[1] < 0) boid[1] = height;
-				if (boid[1] > height) boid[1] = 0;
-			}
-
-			boid[2] = tvel[0];
-			boid[3] = tvel[1];
-		},
-
-		showBoid(boid) {
-			if (opt.indices) {
-				noStroke();
-				textAlign(CENTER);
-				textFont("monospace");
-				fill(255);
-				text(boid[6], boid[0], boid[1] - 5);
-			}
-
-			let c;
-			if (opt.hues)
-				c = color(map(V.len(vel(boid)), opt.minSpeed, opt.maxSpeed, 0, 127, true), 255, 255);
-			else c = color(159);
-
-			if (!opt.squares) {
-				strokeWeight(4);
-				stroke(c);
-				point(boid[0], boid[1]);
-			} else {
-				noStroke();
-				fill(c);
-				rect(boid[0] - 2, boid[1] - 2, 4, 4);
-			}
-		},
-
-		showData(boid) {
-			if (opt.areas || opt.outlines) {
-				if (opt.areas) fill(255, 3);
-				else noFill();
-	
-				if (opt.outlines) {
-					strokeWeight(0.5);
-					stroke(255, 63);
-				}
-				else noStroke();
-				
-				ellipse(boid[0], boid[1], dbVis, dbVis);
+		for (let i = Math.floor(random(step)); i < cand.length; i += step) {
+			if (!cand[i]) break;
+			const d = this.sqrDist(cand[i]);
+			if (d < g.sqVis && this !== cand[i]) {
+				ns.push(cand[i]);
+				ds.push(d);
 			}
 		}
-	};
-})();
+
+		return [ns, ds];
+	}
+
+	flock(flock) {
+		this.acc.zero();
+		
+		const aln = new V2D();
+		const csn = new V2D();
+		const sep = new V2D();
+
+		let [ns, ds] = this.neighbors(flock);
+
+		let i = 0;
+		for (const other of ns) {
+			aln.add(other.vel);
+			csn.add(other);
+
+			let diff = [this[0] - other[0], this[1] - other[1]];
+			sep.sclAdd(diff, 1 / (ds[i] || 1));
+
+			i++;
+		}
+
+		if (ns.length > 0) {
+			aln.setLen(opt.maxSpeed)
+				.sub(this.vel)
+				.max(opt.maxForce);
+
+			csn.scale(1 / ns.length)
+				.sub(this)
+				.setLen(opt.maxSpeed)
+				.sub(this.vel)
+				.max(opt.maxForce);
+			
+			sep.setLen(opt.maxSpeed)
+				.sub(this.vel)
+				.max(opt.maxForce);
+		}
+
+		this.acc.sclAdd(aln, opt.alignment);
+		this.acc.sclAdd(csn, opt.cohesion);
+		this.acc.sclAdd(sep, opt.separation);
+	}
+
+	interact() {
+		if (opt.particle) {
+			this.acc.zero();
+		}
+
+		if (g.mouse.down && g.mouse.over) {
+			const mv = new V2D(g.mouse.x, g.mouse.y);
+
+			const d = mv.sqrDist(this);
+
+			mv.sub(this)
+				.setLen(10000 / d || 1)
+				.max(g.mouseForce);
+
+			if (g.mouse.button === 0) {
+				this.acc.add(mv);
+			} else if (g.mouse.button === 2) {
+				this.acc.sub(mv);
+			}
+		}
+
+		if (g.explode > 0.001) {
+			const ev = V2D.copy(g.explodePos);
+
+			const d = ev.sqrDist(this);
+
+			ev.sub(this)
+				.setLen(g.explode * 100000 / d || 1)
+				.max(g.mouseForce * 3);
+
+			this.acc.sub(ev);
+		}
+	}
+
+	update() {
+		this.vel.add(this.acc);
+
+		if (opt.drag)
+			this.vel.scale(1 - opt.drag);
+		if (opt.noise) {
+			const temp = V2D.random(opt.noise / 20);
+			this.vel.add(temp, opt.noise * opt.maxSpeed / 100);
+		}
+		if (opt.minSpeed) {
+			if (this.vel.sqrLen() === 0) this.vel.random(0.1);
+			this.vel.min(opt.minSpeed);
+		}
+
+		this.vel.max(opt.maxSpeed);
+		this.add(this.vel);
+
+		if (opt.bounce) {
+			let ran = false;
+			if (this[0] < 0 || this[0] > g.width) {
+				ran = true;
+				this.vel[0] *= -1;
+			}
+			if (this[1] < 0 || this[1] > g.height) {
+				ran = true;
+				this.vel[1] *= -1;
+			}
+			if (ran) {
+				this[0] = constrain(this[0], 0, g.width);
+				this[1] = constrain(this[1], 0, g.height);
+			}
+		} else {
+			if (this[0] < 0) this[0] = g.width;
+			if (this[0] > g.width) this[0] = 0;
+			if (this[1] < 0) this[1] = g.height;
+			if (this[1] > g.height) this[1] = 0;
+		}
+	}
+
+	show() {
+		this.shape = this.getShape();
+		this.shape.x = this[0];
+		this.shape.y = this[1];
+		this.shape.rotation = Math.atan2(this.vel[1], this.vel[0]);
+		
+		if (opt.hues)
+			this.shape.tint = hsv(constrain(this.vel.len() / (opt.maxSpeed * 2), 0, 1), 1, 1);
+		else this.shape.tint = 0xffffff;
+
+		if (opt.desired && this.acc.sqrLen() > 0.01) {
+			this.desired.alpha = 0.5;
+			this.desired.x = this[0];
+			this.desired.y = this[1];
+			this.desired.rotation = Math.atan2(this.acc[1], this.acc[0]);
+		} else this.desired.alpha = 0;
+	}
+
+	getShape() {
+		if (this.shapeMode !== g.shapeMode) {
+			this.shape.clear();
+
+			this.shape.beginFill(0xffffff);
+			this.shape.lineStyle();
+			this.shape.moveTo(6, 0);
+			this.shape.lineTo(-6, -4);
+			this.shape.lineTo(-4, 0);
+			this.shape.lineTo(-6, 4);
+			this.shape.lineTo(6, 0);
+			this.shape.endFill();
+
+			if (opt.areas || opt.outlines) {
+				this.shape.beginFill(opt.areas ? 0xffffff : 0, 0.03);
+				this.shape.lineStyle(opt.outlines ? 0.5 : 0, 0xffffff, 0.2);
+				this.shape.drawCircle(0, 0, g.vis);
+				this.shape.endFill();
+			}
+
+			this.shape.alpha = 0.8;
+
+			this.shapeMode = g.shapeMode;
+		}
+
+		return this.shape;
+	}
+
+	destroy() {
+		this.shape.destroy();
+		this.desired.destroy();
+	}
+}

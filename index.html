@@ -51,7 +51,10 @@
 
 	<body>
 		<div id="container" :class="menu ? '' : 'hidden'">
-			<h3>boids</h3>
+			<header>
+				<h3>boids</h3>
+				<a href="https://github.com/cubeDhuang/boids" class="source" target="_blank">source code</a>
+			</header>
 
 			<p>
 				left and right click to move the boids, or just watch their flocking patterns! <br>
@@ -72,7 +75,7 @@
 			</div>
 
 			<p>number of boids: {{ boids }}</p>
-			<input type="range" min="25" max="2000" step="25" v-model="rboids">
+			<input type="range" min="50" max="5000" step="50" v-model="rboids">
 
 			<h4>visual settings</h4>
 			
@@ -80,14 +83,10 @@
 				<input type="checkbox" id="toggle" v-model="toggle">
 				<label for="toggle"> hide menu toggle (it still works)</label>
 			</div>
-			<div>
+			<!-- <div>
 				<input type="checkbox" id="squares" v-model="squares">
 				<label for="squares"> show boids as squares (faster)</label>
-			</div>
-			<div>
-				<input type="checkbox" id="direction" v-model="direction">
-				<label for="direction"> show boid directions</label>
-			</div>
+			</div> -->
 			<div>
 				<input type="checkbox" id="desired" v-model="desired">
 				<label for="desired"> show boid desired directions</label>
@@ -104,13 +103,6 @@
 				<input type="checkbox" id="outlines" v-model="outlines">
 				<label for="outlines"> show vision outlines</label>
 			</div>
-			<div>
-				<input type="checkbox" id="neighbors" v-model="neighbors">
-				<label for="neighbors"> show visible neighbors</label>
-			</div>
-			
-			<p>trail opacity: {{ trail }}</p>
-			<input type="range" min="0" max="120" step="5" v-model="rtrail">
 			
 			<h4>boid movement</h4>
 
@@ -124,8 +116,11 @@
 				<label for="bounce"> bounce off of edges</label>
 			</div>
 
+			<p>movement accuracy: {{ accuracy || "perfect" }}</p>
+			<input type="range" min="1" max="10" step="0.5" v-model="raccuracy">
+
 			<p>boid vision: {{ vision }}</p>
-			<input type="range" min="0" max="300" step="5" v-model="rvision">
+			<input type="range" min="0" max="150" step="5" v-model="rvision">
 
 			<p>alignment force: {{ alignment }}</p>
 			<input type="range" min="0" max="4" step="0.1" v-model="ralignment">
@@ -143,7 +138,7 @@
 			<input type="range" min="0" :max="maxSpeed" step="0.25" v-model="rminSpeed">
 
 			<p>max speed: {{ maxSpeed }}</p>
-			<input type="range" min="0" max="25" step="0.5" v-model="rmaxSpeed">
+			<input type="range" min="0" max="12" step="0.5" v-model="rmaxSpeed">
 			
 			<p>drag: {{ drag }}</p>
 			<input type="range" min="0" max="0.05" step="0.0025" v-model="rdrag">
@@ -160,28 +155,23 @@
 			<div v-if="debug">
 				<p :key="special.rerender">fps: {{ special.fps.toFixed(1) }}</p>
 				<div>
-					<input type="checkbox" id="hidden" v-model="hidden">
-					<label for="hidden"> hide boids</label>
-				</div>
-				<div>
 					<input type="checkbox" id="indices" v-model="indices">
 					<label for="indices"> show boid indices</label>
 				</div>
 				<div>
-					<input type="checkbox" id="quadtree" v-model="quadtree">
-					<label for="quadtree"> show quadtree</label>
+					<input type="checkbox" id="buckets" v-model="buckets">
+					<label for="buckets"> show spatial subdivision</label>
 				</div>
 			</div>
 		</div>
 
 		<script src="./lib/vue.min.js"></script>
-		<script src="./lib/d3-quadtree.min.js"></script>
-		<script src="./lib/hammer.min.js"></script>
-		<script src="./lib/p5.min.js"></script>
+		<script src="./lib/pixi.min.js"></script>
+		<script src="./js/v2d.js"></script>
 		<script src="./js/settings.js"></script>
-		<script src="./js/v.js"></script>
 		<script src="./js/boid.js"></script>
 		<script src="./js/flock.js"></script>
-		<script src="./js/script.js"></script>
+		<script src="./js/main.js"></script>
+		<script src="./js/events.js"></script>
 	</body>
 </html>

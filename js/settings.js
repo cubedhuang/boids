@@ -4,68 +4,60 @@ const opt = new Vue({
 	data: {
 		menu: true,
 		paused: false,
-		rboids: 600,
+		rboids: 1500,
 
 		toggle: false,
-		squares: false,
-		direction: true,
+		direction: false,
 		desired: false,
 		hues: true,
 		areas: false,
 		outlines: false,
-		neighbors: false,
-		rtrail: 0,
 
 		particle: false,
 		bounce: false,
-		rvision: 75,
+		raccuracy: 5,
+		rvision: 25,
 		ralignment: 1,
 		rcohesion: 1,
 		rseparation: 1,
 		rmaxForce: 0.2,
-		rminSpeed: 2,
-		rmaxSpeed: 10,
+		rminSpeed: 1,
+		rmaxSpeed: 4,
 		rdrag: 0.005,
 		rnoise: 0,
 
 		debug: false,
-		hidden: false,
 		indices: false,
-		quadtree: false,
+		buckets: false,
 
 		special: {
-			rerender: 0,
 			encode: {
 				menu: "a",
 				paused: "b",
 				rboids: "c",
 			
 				toggle: "d",
-				squares: "e",
-				direction: "f",
-				desired: "g",
-				hues: "h",
-				areas: "i",
-				outlines: "j",
-				neighbors: "k",
-				rtrail: "l",
-			
-				bounce: "m",
-				particle: "n",
-				rvision: "o",
-				ralignment: "p",
-				rcohesion: "q",
-				rseparation: "r",
-				rmaxForce: "s",
-				rminSpeed: "t",
-				rmaxSpeed: "u",
-				rdrag: "v",
-				rnoise: "w",
+				desired: "e",
+				hues: "f",
+				areas: "g",
+				outlines: "h",
 
-				debug: "x",
-				hidden: "y",
-				indices: "z",
-				quadtree: "aa"
+				bounce: "i",
+				particle: "j",
+				raccuracy: "k",
+				rvision: "l",
+				ralignment: "m",
+				rcohesion: "n",
+				rseparation: "o",
+				rmaxForce: "p",
+				rminSpeed: "q",
+				rmaxSpeed: "r",
+				rdrag: "s",
+				rnoise: "t",
+				
+				debug: "u",
+				indices: "v",
+				buckets: "w",
 			},
 			fpsA: [],
 			fps: 60,
@@ -76,12 +68,25 @@ const opt = new Vue({
 		maxSpeed(v) {
 			if (v < this.rminSpeed)
 				this.rminSpeed = v;
-		}
+		},
+
+		toggle(v) {
+			if (!v) app.stage.addChild(g.sprites.menu);
+			else app.stage.removeChild(g.sprites.menu);
+		},
+
+		areas() { g.shapeMode++ },
+		outlines() { g.shapeMode++ },
 	},
 
 	computed: {
 		boids() { return parseFloat(this.rboids) },
-		trail() { return parseFloat(this.rtrail) },
+		// trail() { return parseFloat(this.rtrail) },
+		accuracy() {
+			const v = Math.round(2 ** parseFloat(this.raccuracy));
+			if (v === 1024) return 0;
+			return v;
+		},
 		vision() { return parseFloat(this.rvision) },
 		alignment() { return parseFloat(this.ralignment) },
 		cohesion() { return parseFloat(this.rcohesion) },
@@ -104,11 +109,7 @@ const opt = new Vue({
 		},
 
 		next() {
-			nextFrame = true;
-		},
-
-		fps() {
-			return fps.toFixed(1);
+			g.nextFrame = true;
 		},
 		
 		getURL() {

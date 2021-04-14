@@ -1,2 +1,2 @@
 # boids
-boids project is good so it's here now
+interactive 2d flocking simulation with many customizable parameters
