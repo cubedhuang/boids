@@ -50,117 +50,122 @@
 	</head>
 
 	<body>
-		<div id="container" :class="menu ? '' : 'hidden'">
-			<header>
-				<h3>boids</h3>
-				<a href="https://github.com/cubeDhuang/boids" class="source" target="_blank">source code</a>
-			</header>
-
-			<p>
-				left and right click to move the boids, or just watch their flocking patterns! <br>
-				double click to make an explosion <br>
-				middle click or click in the top right to toggle this menu <br>
-				press space to pause, and use . to advance one frame
-			</p>
-
-			<div id="pauser">
-				<input type="checkbox" id="pauseButton" v-model="paused">
-				<label for="pauseButton"> </label>
-				<button class="nexter" @click="next">next frame</button>
-			</div>
-
-			<div class="resetters">
-				<button @click="restart">restart simulation</button>
-				<button @click="reset">reset settings</button>
-			</div>
-
-			<p>number of boids: {{ boids }}</p>
-			<input type="range" min="50" max="5000" step="50" v-model="rboids">
-
-			<h4>visual settings</h4>
-			
-			<div>
-				<input type="checkbox" id="toggle" v-model="toggle">
-				<label for="toggle"> hide menu toggle (it still works)</label>
-			</div>
-			<!-- <div>
-				<input type="checkbox" id="squares" v-model="squares">
-				<label for="squares"> show boids as squares (faster)</label>
-			</div> -->
-			<div>
-				<input type="checkbox" id="desired" v-model="desired">
-				<label for="desired"> show boid desired directions</label>
-			</div>
-			<div>
-				<input type="checkbox" id="hues" v-model="hues">
-				<label for="hues"> change hues to indicate speed</label>
-			</div>
-			<div>
-				<input type="checkbox" id="areas" v-model="areas">
-				<label for="areas"> show vision areas</label>
-			</div>
-			<div>
-				<input type="checkbox" id="outlines" v-model="outlines">
-				<label for="outlines"> show vision outlines</label>
-			</div>
-			
-			<h4>boid movement</h4>
-
-			<div>
-				<input type="checkbox" id="particle" v-model="particle">
-				<label for="particle"> particle mode</label>
-			</div>
-
-			<div>
-				<input type="checkbox" id="bounce" v-model="bounce">
-				<label for="bounce"> bounce off of edges</label>
-			</div>
-
-			<p>movement accuracy: {{ accuracy || "perfect" }}</p>
-			<input type="range" min="1" max="10" step="0.5" v-model="raccuracy">
-
-			<p>boid vision: {{ vision }}</p>
-			<input type="range" min="0" max="150" step="5" v-model="rvision">
-
-			<p>alignment force: {{ alignment }}</p>
-			<input type="range" min="0" max="4" step="0.1" v-model="ralignment">
-
-			<p>cohesion force: {{ cohesion }}</p>
-			<input type="range" min="0" max="4" step="0.1" v-model="rcohesion">
-			
-			<p>separation force: {{ separation }}</p>
-			<input type="range" min="0" max="4" step="0.1" v-model="rseparation">
-			
-			<p>steering force: {{ maxForce }}</p>
-			<input type="range" min="0" max="1" step="0.05" v-model="rmaxForce">
-			
-			<p>min speed: {{ minSpeed }}</p>
-			<input type="range" min="0" :max="maxSpeed" step="0.25" v-model="rminSpeed">
-
-			<p>max speed: {{ maxSpeed }}</p>
-			<input type="range" min="0" max="12" step="0.5" v-model="rmaxSpeed">
-			
-			<p>drag: {{ drag }}</p>
-			<input type="range" min="0" max="0.05" step="0.0025" v-model="rdrag">
-			
-			<p>movement randomness: {{ noise }}</p>
-			<input type="range" min="0" max="10" step="0.5" v-model="rnoise">
-			
-			<h4>debug info</h4>
-			<div>
-				<input type="checkbox" id="debug" v-model="debug">
-				<label for="debug">show debug info</label>
-			</div>
-
-			<div v-if="debug">
-				<p :key="special.rerender">fps: {{ special.fps.toFixed(1) }}</p>
+		<div id="app">
+			<div id="container" :class="menu ? '' : 'hidden'">
+				<header>
+					<h3>boids</h3>
+					<a href="https://github.com/cubeDhuang/boids" class="source" target="_blank">source code</a>
+				</header>
+	
+				<p>
+					left and right click to move the boids, or just watch their flocking patterns! <br>
+					double click to make an explosion <br>
+					middle click or click in the top right to toggle this menu <br>
+					press space to pause, and use . to advance one frame
+				</p>
+	
+				<div id="pauser">
+					<input type="checkbox" id="pauseButton" v-model="paused">
+					<label for="pauseButton"> </label>
+					<button class="nexter" @click="next">next frame</button>
+				</div>
+	
+				<div class="resetters">
+					<button @click="restart">restart simulation</button>
+					<button @click="reset">reset settings</button>
+				</div>
+	
+				<p>number of boids: {{ boids }}</p>
+				<input type="range" min="50" max="5000" step="50" v-model="rboids">
+	
+				<h4>visual settings</h4>
+				
 				<div>
-					<input type="checkbox" id="indices" v-model="indices">
-					<label for="indices"> show boid indices</label>
+					<input type="checkbox" id="toggle" v-model="toggle">
+					<label for="toggle"> hide menu toggle (still works)</label>
 				</div>
 				<div>
-					<input type="checkbox" id="buckets" v-model="buckets">
-					<label for="buckets"> show spatial subdivision</label>
+					<input type="checkbox" id="desired" v-model="desired">
+					<label for="desired"> show boid desired directions</label>
+				</div>
+				<div>
+					<input type="checkbox" id="hues" v-model="hues">
+					<label for="hues"> change hues to indicate speed</label>
+				</div>
+				<div>
+					<input type="checkbox" id="areas" v-model="areas">
+					<label for="areas"> show vision areas</label>
+				</div>
+				<div>
+					<input type="checkbox" id="outlines" v-model="outlines">
+					<label for="outlines"> show vision outlines</label>
+				</div>
+				
+				<h4>boid movement</h4>
+	
+				<div>
+					<input type="checkbox" id="particle" v-model="particle">
+					<label for="particle"> particle mode</label>
+				</div>
+	
+				<div>
+					<input type="checkbox" id="bounce" v-model="bounce">
+					<label for="bounce"> bounce off of edges</label>
+				</div>
+	
+				<p>movement accuracy: {{ accuracy || "perfect" }}</p>
+				<input type="range" min="2" max="10" step="0.25" v-model="raccuracy">
+	
+				<p>boid vision: {{ vision }}</p>
+				<input type="range" min="0" max="150" step="5" v-model="rvision">
+	
+				<p>alignment force: {{ alignment }}</p>
+				<input type="range" min="0" max="4" step="0.1" v-model="ralignment">
+	
+				<p>cohesion force: {{ cohesion }}</p>
+				<input type="range" min="0" max="4" step="0.1" v-model="rcohesion">
+				
+				<p>separation force: {{ separation }}</p>
+				<input type="range" min="0" max="4" step="0.1" v-model="rseparation">
+				
+				<p>steering force: {{ maxForce }}</p>
+				<input type="range" min="0" max="1" step="0.05" v-model="rmaxForce">
+				
+				<p>min speed: {{ minSpeed }}</p>
+				<input type="range" min="0" :max="maxSpeed" step="0.25" v-model="rminSpeed">
+	
+				<p>max speed: {{ maxSpeed }}</p>
+				<input type="range" min="0" max="12" step="0.5" v-model="rmaxSpeed">
+				
+				<p>drag: {{ drag }}</p>
+				<input type="range" min="0" max="0.05" step="0.0025" v-model="rdrag">
+				
+				<p>movement randomness: {{ noise }}</p>
+				<input type="range" min="0" max="10" step="0.5" v-model="rnoise">
+				
+				<h4>debug info</h4>
+				<div>
+					<input type="checkbox" id="debug" v-model="debug">
+					<label for="debug">show debug info</label>
+				</div>
+	
+				<div v-if="debug">
+					<p :key="special.rerender">fps: {{ special.fps.toFixed(1) }}</p>
+					<div>
+						<input type="checkbox" id="indices" v-model="indices">
+						<label for="indices"> show boid indices</label>
+					</div>
+					<div>
+						<input type="checkbox" id="buckets" v-model="buckets">
+						<label for="buckets"> show spatial subdivision</label>
+					</div>
+				</div>
+	
+			</div>
+
+			<div id="toggler" :class="menu ? '' : 'hidden'" @click="menu = !menu">
+				<div class="img">
+					<img src="./right-arrow.svg" alt="arrow" :class="toggle ? 'gone' : ''">
 				</div>
 			</div>
 		</div>
@@ -168,6 +173,7 @@
 		<script src="./lib/vue.min.js"></script>
 		<script src="./lib/pixi.min.js"></script>
 		<script src="./js/v2d.js"></script>
+		<script src="./js/util.js"></script>
 		<script src="./js/settings.js"></script>
 		<script src="./js/boid.js"></script>
 		<script src="./js/flock.js"></script>

@@ -11,7 +11,7 @@ class Boid extends V2D {
 	constructor(index) {
 		super(random(g.width), random(g.height));
 
-		this.vel = V2D.random(random(opt.maxSpeed));
+		this.vel = V2D.random(random(opt.minSpeed, opt.maxSpeed));
 		this.acc = new V2D();
 
 		this.index = index;
@@ -65,24 +65,24 @@ class Boid extends V2D {
 			aln.add(other.vel);
 			csn.add(other);
 
-			let diff = [this[0] - other[0], this[1] - other[1]];
+			let diff = V2D.sub(this, other);
 			sep.sclAdd(diff, 1 / (ds[i] || 1));
 
 			i++;
 		}
 
 		if (ns.length > 0) {
-			aln.setLen(opt.maxSpeed)
+			aln.setMag(opt.maxSpeed)
 				.sub(this.vel)
 				.max(opt.maxForce);
 
-			csn.scale(1 / ns.length)
+			csn.div(ns.length)
 				.sub(this)
-				.setLen(opt.maxSpeed)
+				.setMag(opt.maxSpeed)
 				.sub(this.vel)
 				.max(opt.maxForce);
 			
-			sep.setLen(opt.maxSpeed)
+			sep.setMag(opt.maxSpeed)
 				.sub(this.vel)
 				.max(opt.maxForce);
 		}
@@ -103,7 +103,7 @@ class Boid extends V2D {
 			const d = mv.sqrDist(this);
 
 			mv.sub(this)
-				.setLen(10000 / d || 1)
+				.setMag(10000 / d || 1)
 				.max(g.mouseForce);
 
 			if (g.mouse.button === 0) {
@@ -114,12 +114,12 @@ class Boid extends V2D {
 		}
 
 		if (g.explode > 0.001) {
-			const ev = V2D.copy(g.explodePos);
+			const ev = g.explodePos.clone();
 
 			const d = ev.sqrDist(this);
 
 			ev.sub(this)
-				.setLen(g.explode * 100000 / d || 1)
+				.setMag(g.explode * 100000 / d || 1)
 				.max(g.mouseForce * 3);
 
 			this.acc.sub(ev);
@@ -130,14 +130,14 @@ class Boid extends V2D {
 		this.vel.add(this.acc);
 
 		if (opt.drag)
-			this.vel.scale(1 - opt.drag);
-		if (opt.noise) {
-			const temp = V2D.random(opt.noise / 20);
-			this.vel.add(temp, opt.noise * opt.maxSpeed / 100);
-		}
+			this.vel.mult(1 - opt.drag);
+
+		if (opt.noise)
+			this.vel.rotate(random(-g.noiseRange, g.noiseRange));
+
 		if (opt.minSpeed) {
-			if (this.vel.sqrLen() === 0) this.vel.random(0.1);
-			this.vel.min(opt.minSpeed);
+			if (this.vel.sqrMag() === 0) this.vel.random(opt.minSpeed);
+			else this.vel.min(opt.minSpeed);
 		}
 
 		this.vel.max(opt.maxSpeed);
@@ -145,41 +145,41 @@ class Boid extends V2D {
 
 		if (opt.bounce) {
 			let ran = false;
-			if (this[0] < 0 || this[0] > g.width) {
+			if (this.x < 0 || this.x > g.width) {
 				ran = true;
-				this.vel[0] *= -1;
+				this.vel.x *= -1;
 			}
-			if (this[1] < 0 || this[1] > g.height) {
+			if (this.y < 0 || this.y > g.height) {
 				ran = true;
-				this.vel[1] *= -1;
+				this.vel.y *= -1;
 			}
 			if (ran) {
-				this[0] = constrain(this[0], 0, g.width);
-				this[1] = constrain(this[1], 0, g.height);
+				this.x = constrain(this.x, 0, g.width);
+				this.y = constrain(this.y, 0, g.height);
 			}
 		} else {
-			if (this[0] < 0) this[0] = g.width;
-			if (this[0] > g.width) this[0] = 0;
-			if (this[1] < 0) this[1] = g.height;
-			if (this[1] > g.height) this[1] = 0;
+			if (this.x < 0) this.x = g.width;
+			if (this.x > g.width) this.x = 0;
+			if (this.y < 0) this.y = g.height;
+			if (this.y > g.height) this.y = 0;
 		}
 	}
 
 	show() {
 		this.shape = this.getShape();
-		this.shape.x = this[0];
-		this.shape.y = this[1];
-		this.shape.rotation = Math.atan2(this.vel[1], this.vel[0]);
+		this.shape.x = this.x;
+		this.shape.y = this.y;
+		this.shape.rotation = this.vel.angle();
 		
 		if (opt.hues)
-			this.shape.tint = hsv(constrain(this.vel.len() / (opt.maxSpeed * 2), 0, 1), 1, 1);
+			this.shape.tint = hsv(constrain(this.vel.mag() / (opt.maxSpeed * 2), 0, 1), 1, 1);
 		else this.shape.tint = 0xffffff;
 
-		if (opt.desired && this.acc.sqrLen() > 0.01) {
+		if (opt.desired && this.acc.sqrMag() > 0.01) {
 			this.desired.alpha = 0.5;
-			this.desired.x = this[0];
-			this.desired.y = this[1];
-			this.desired.rotation = Math.atan2(this.acc[1], this.acc[0]);
+			this.desired.x = this.x;
+			this.desired.y = this.y;
+			this.desired.rotation = this.acc.angle();
 		} else this.desired.alpha = 0;
 	}
 
@@ -197,7 +197,7 @@ class Boid extends V2D {
 			this.shape.endFill();
 
 			if (opt.areas || opt.outlines) {
-				this.shape.beginFill(opt.areas ? 0xffffff : 0, 0.03);
+				this.shape.beginFill(0xffffff, opt.areas ? 0.03 : 0);
 				this.shape.lineStyle(opt.outlines ? 0.5 : 0, 0xffffff, 0.2);
 				this.shape.drawCircle(0, 0, g.vis);
 				this.shape.endFill();

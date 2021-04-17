@@ -30,39 +30,6 @@ class Flock {
 	}
 
 	draw() {
-		// for (const boid of this.boids) {
-		// 	if ((opt.paused || opt.particle) && opt.neighbors) {
-		// 		B.neighbors(boid, this);
-		// 	}
-		// 	B.showData(boid);
-		// }
-
-		// if (opt.direction) {
-		// 	let m = 30 / opt.maxSpeed;
-
-		// 	drawingContext.lineWidth = 1;
-		// 	drawingContext.strokeStyle = "rgba(255, 255, 255, 0.25)";
-		// 	drawingContext.beginPath();
-		// 	for (const boid of this.boids) {
-		// 		drawingContext.moveTo(boid[0], boid[1]);
-		// 		drawingContext.lineTo(boid[0] + boid[2] * m, boid[1] + boid[3] * m);
-		// 	}
-		// 	drawingContext.stroke();
-		// }
-
-		// if (opt.desired) {
-		// 	let m = 10 / opt.maxForce;
-
-		// 	drawingContext.lineWidth = 1;
-		// 	drawingContext.strokeStyle = "rgba(255, 0, 127, 0.5)";
-		// 	drawingContext.beginPath();
-		// 	for (const boid of this.boids) {
-		// 		drawingContext.moveTo(boid[0], boid[1]);
-		// 		drawingContext.lineTo(boid[0] + boid[4] * m, boid[1] + boid[5] * m);
-		// 	}
-		// 	drawingContext.stroke();
-		// }
-		
 		if (!opt.hidden) {
 			for (const boid of this.boids) {
 				boid.show();
@@ -120,8 +87,8 @@ class Flock {
 		this.buckets.fill(undefined);
 
 		for (const boid of this.boids) {
-			const row = Math.floor(boid[1] / this.space.scale);
-			const col = Math.floor(boid[0] / this.space.scale);
+			const row = Math.floor(boid.y / this.space.scale);
+			const col = Math.floor(boid.x / this.space.scale);
 			this.buckets[row] ??= [];
 			this.buckets[row][col] ??= [];
 			this.buckets[row][col].push(boid);
@@ -136,8 +103,8 @@ class Flock {
 	candidates(boid) {
 		const cand = [];
 
-		const row = Math.floor(boid[1] / this.space.scale);
-		const col = Math.floor(boid[0] / this.space.scale);
+		const row = Math.floor(boid.y / this.space.scale);
+		const col = Math.floor(boid.x / this.space.scale);
 
 		this._b(row    , col    , cand);
 		this._b(row    , col + 1, cand);

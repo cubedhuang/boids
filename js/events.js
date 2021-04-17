@@ -1,4 +1,4 @@
-{
+(() => {
 	const cont = document.getElementById("container");
 	cont.addEventListener("mouseover", () => g.mouse.over = false);
 	cont.addEventListener("mouseout", () => g.mouse.over = true);
@@ -44,9 +44,9 @@
 	function double() {
 		if (g.mouse.over) {
 			g.explode = 1;
-			g.explodePos.set(g.mouse.x, g.mouse.y);
-			g.sprites.explode.x = g.explodePos[0];
-			g.sprites.explode.y = g.explodePos[1];
+			g.explodePos.copy(g.mouse);
+			g.sprites.explode.x = g.explodePos.x;
+			g.sprites.explode.y = g.explodePos.y;
 		}
 	}
 
@@ -67,4 +67,4 @@
 		g.height = window.innerHeight;
 		app.renderer.resize(window.innerWidth, window.innerHeight);
 	});
-}
+})();

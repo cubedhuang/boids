@@ -22,22 +22,6 @@ const g = {
 	height: window.innerHeight,
 
 	sprites: {
-		menu: (() => {
-			let shape = new PIXI.Graphics();
-
-			shape.clear();
-			shape.lineStyle(6, 0xffffff);
-
-			shape.moveTo(0, 10);
-			shape.lineTo(30, 10);
-			shape.moveTo(0, 20);
-			shape.lineTo(30, 20);
-			shape.moveTo(0, 30);
-			shape.lineTo(30, 30);
-			shape.alpha = 0.25;
-
-			return shape;
-		})(),
 		explode: (() => {
 			let shape = new PIXI.Graphics();
 
@@ -52,7 +36,8 @@ const g = {
 
 	delta: 1,
 
-	shapeMode: 1
+	shapeMode: 1,
+	noiseRange: Math.PI / 80 * opt.noise
 }
 
 // PIXI app
@@ -67,8 +52,6 @@ const app = new PIXI.Application({
 });
 
 document.body.appendChild(app.view);
-
-if (!opt.toggle) app.stage.addChild(g.sprites.menu);
 
 let flock = new Flock(opt.boids);
 
@@ -102,10 +85,6 @@ function loop(delta) {
 	} else if (g.explode !== 0) {
 		app.stage.removeChild(g.sprites.explode);
 		g.explode = 0;
-	}
-
-	if (!opt.toggle) {
-		g.sprites.menu.x = g.width - (opt.menu ? 45 : 35);
 	}
 
 	if (opt.debug) {

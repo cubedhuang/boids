@@ -1,5 +1,5 @@
 const opt = new Vue({
-	el: "#container",
+	el: "#app",
 
 	data: {
 		menu: true,
@@ -23,7 +23,7 @@ const opt = new Vue({
 		rminSpeed: 1,
 		rmaxSpeed: 4,
 		rdrag: 0.005,
-		rnoise: 0,
+		rnoise: 2,
 
 		debug: false,
 		indices: false,
@@ -76,6 +76,9 @@ const opt = new Vue({
 
 		areas() { g.shapeMode++ },
 		outlines() { g.shapeMode++ },
+		noise() {
+			g.noiseRange = Math.PI / 80 * opt.noise;
+		}
 	},
 
 	computed: {
@@ -156,7 +159,7 @@ const opt = new Vue({
 			if (!p) continue;
 
 			if (typeof value === "boolean") {
-				this[key] = p === "1";
+				this[key] = p !== "0";
 			} else {
 				this[key] = parseFloat(p);
 			}
