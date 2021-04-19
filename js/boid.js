@@ -1,12 +1,3 @@
-/**
- * 0, 1 = position
- * 2, 3 = velocity
- * 4, 5 = acceleration
- * 6 = index
- * 7 = pixi shape
- * 8 = shape mode
- */
-
 class Boid extends V2D {
 	constructor(index) {
 		super(random(g.width), random(g.height));
@@ -62,7 +53,9 @@ class Boid extends V2D {
 
 		let i = 0;
 		for (const other of ns) {
-			aln.add(other.vel);
+			const mult = g.bias ** other.vel.dot(this.vel);
+
+			aln.add(V2D.mult(other.vel, mult));
 			csn.add(other);
 
 			let diff = V2D.sub(this, other);

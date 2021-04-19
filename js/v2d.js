@@ -29,7 +29,7 @@ class V2D {
 	 */
 	static random(scale = 1) {
 		const r = Math.random() * 2.0 * Math.PI;
-		return new V2D(Math.cos(r) * scale, Math.sin(r) * scale)
+		return new V2D(Math.cos(r) * scale, Math.sin(r) * scale);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class V2D {
 	 * @returns {V2D}
 	 */
 	static add(a, b) {
-		return new V2D(a.x + b.x, a.y + b.y)
+		return new V2D(a.x + b.x, a.y + b.y);
 	}
 
 	/**
@@ -49,7 +49,27 @@ class V2D {
 	 * @returns {V2D}
 	 */
 	static sub(a, b) {
-		return new V2D(a.x - b.x, a.y - b.y)
+		return new V2D(a.x - b.x, a.y - b.y);
+	}
+
+	/**
+	 * Multiplies a vector by a scalar value and returns the resultant
+	 * @param {V2D} v Vector
+	 * @param {number} scale Scale
+	 * @returns {V2D}
+	 */
+	static mult(v, scale) {
+		return new V2D(v.x * scale, v.y * scale);
+	}
+
+	/**
+	 * Divides a vector by a scalar value and returns the resultant
+	 * @param {V2D} a Vector
+	 * @param {number} b Scale
+	 * @returns {V2D}
+	 */
+	static div(v, scale) {
+		return new V2D(v.x / scale, v.y / scale)
 	}
 
 	/**

@@ -1,7 +1,5 @@
-const opt = new Vue({
-	el: "#app",
-
-	data: {
+function getDefaults() {
+	return {
 		menu: true,
 		paused: false,
 		rboids: 1500,
@@ -17,16 +15,16 @@ const opt = new Vue({
 		raccuracy: 5,
 		rvision: 25,
 		ralignment: 1,
+		rbias: 1.2,
 		rcohesion: 1,
 		rseparation: 1,
 		rmaxForce: 0.2,
 		rminSpeed: 1,
 		rmaxSpeed: 4,
 		rdrag: 0.005,
-		rnoise: 2,
+		rnoise: 1,
 
 		debug: false,
-		indices: false,
 		buckets: false,
 
 		special: {
@@ -46,22 +44,34 @@ const opt = new Vue({
 				raccuracy: "k",
 				rvision: "l",
 				ralignment: "m",
-				rcohesion: "n",
-				rseparation: "o",
-				rmaxForce: "p",
-				rminSpeed: "q",
-				rmaxSpeed: "r",
-				rdrag: "s",
-				rnoise: "t",
+				rbias: "n",
+				rcohesion: "o",
+				rseparation: "p",
+				rmaxForce: "q",
+				rminSpeed: "r",
+				rmaxSpeed: "s",
+				rdrag: "t",
+				rnoise: "u",
 				
-				debug: "u",
-				indices: "v",
+				debug: "v",
 				buckets: "w",
 			},
 			fpsA: [],
 			fps: 60,
+
+			inExport: false,
+			inImport: false,
+
+			save: "",
+			inSave: ""
 		},
-	},
+	}
+}
+
+const opt = new Vue({
+	el: "#app",
+
+	data: getDefaults,
 
 	watch: {
 		maxSpeed(v) {
@@ -78,6 +88,10 @@ const opt = new Vue({
 		outlines() { g.shapeMode++ },
 		noise() {
 			g.noiseRange = Math.PI / 80 * opt.noise;
+		},
+
+		rbias(val) {
+			g.bias = parseFloat(val);
 		}
 	},
 
@@ -106,63 +120,61 @@ const opt = new Vue({
 		},
 
 		reset() {
-			this.updateURL(window.location.href.split('?')[0]);
-			location.reload();
+			Object.assign(this.$data, getDefaults());
 		},
 
 		next() {
 			g.nextFrame = true;
 		},
-		
-		getURL() {
-			let array = [window.location.href.split("?")[0] + "?"];
+
+		exportSave() {
+			let array = [];
 
 			const entries = Object.entries(this.$data);
 			for (const [key, value] of entries) {
 				if (key === "special") continue;
 
 				const k = this.special.encode[key];
-				
+
 				if (typeof value === "boolean")
 					array.push(`${ k }=${ value ? "1" : "0" }`);
 				else array.push(`${ k }=${ value }`);
 			}
 		
-			return array.join("&");
+			this.special.save = btoa(array.join("|"));
+			this.special.inExport = true;
 		},
 
-		updateURL(val) {
-			window.history.replaceState({}, document.title, typeof val === "string" ? val : this.getURL());
-		},
-	},
-
-	created() {
-		setInterval(this.updateURL, 1000);
-
-		if (window.location.href.split("?").length < 2) {
-			this.updateURL();
-			return;
-		}
-
-		function param(name) {
-			name = name.replace(/[\[\]]/g, "\\$&");
-			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-				results = regex.exec(window.location.href);
-			if (!results) return null;
-			if (!results[2]) return "";
-			return decodeURIComponent(results[2].replace(/\+/g, " "));
-		}
-
-		const entries = Object.entries(this.$data);
-		for (const [key, value] of entries) {
-			const p = param(this.special.encode[key] || "");
-			if (!p) continue;
-
-			if (typeof value === "boolean") {
-				this[key] = p !== "0";
-			} else {
-				this[key] = parseFloat(p);
+		importSave() {
+			const str = this.special.inSave.trim();
+			if (!str) return;
+			
+			let split = atob(str).split("|");
+			let args = new Map();
+			for (const arg of split) {
+				try {
+					const [key, val] = arg.split("=");
+					args.set(key, val);
+				} catch {}
 			}
+
+			for (const [key, value] of Object.entries(this.$data)) {
+				const param = args.get(this.special.encode[key]);
+				if (!param) continue;
+
+				if (typeof value === "boolean") {
+					this[key] = param !== "0";
+				} else {
+					this[key] = parseFloat(param);
+				}
+			}
+
+			this.special.inImport = false;
+		},
+
+		copy() {
+			document.getElementById("exporter").select();
+			document.execCommand('copy');
 		}
 	},
 });

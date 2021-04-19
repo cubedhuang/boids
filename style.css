@@ -34,6 +34,7 @@ body {
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
+	background: #161616;
 }
 
 #container {
@@ -115,7 +116,7 @@ body {
 h3, h4, h5 {
 	font-family: var(--title-font);
 	letter-spacing: 2px;
-	filter: drop-shadow(0 0 5px #fff8);
+	filter: drop-shadow(0 0 5px #fff6);
 }
 
 h3 {
@@ -141,11 +142,16 @@ canvas {
 	top: 0px;
 	left: 0px;
 	z-index: -1;
+	background: #161616;
 }
 
 p {
 	display: block;
-	margin: 10px auto 0 auto !important;
+	margin-top: 10px;
+}
+
+p.info {
+	font-size: 0.9em;
 }
 
 select {
@@ -283,7 +289,7 @@ label {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-	height: 48px;
+	height: 40px;
 	margin-top: 10px;
 }
 
@@ -296,7 +302,7 @@ label {
 	height: 36px;
 	width: 36px;
 
-	top: 6px;
+	top: 2px;
 	left: 0;
 	border: 2px solid #0008;
 }
@@ -310,7 +316,7 @@ label {
 	border-top: none;
 	border-color: #fff8;
 	left: 8px;
-	top: 12px;
+	top: 8px;
 
 	transform: rotate(0);
 
@@ -364,7 +370,7 @@ button {
 
 button:hover {
 	background: var(--base);
-	color: #fff;
+	color: #eee;
 	filter: drop-shadow(0 0 5px #fff4);
 }
 
@@ -373,13 +379,86 @@ button:active {
 	box-shadow: 0 1px 0 var(--base);
 }
 
-.resetters * {
-	float: left;
-	margin-right: 10px;
+.resetters {
+	display: flex;
+	gap: 12px;
 }
 
-.resetters::after {
-	content: "";
-	clear: both;
-	display: table;
+.resetters * {
+	flex: 1;
+}
+
+/* tooltip */
+
+.tooltip {
+	border-bottom: 1px dotted #fff8;
+	opacity: 0.8;
+	position: relative;
+	display: inline-block;
+	width: 10px;
+	text-align: center;
+	margin-left: 10px;
+	cursor: help;
+}
+
+.tooltip .tip {
+	opacity: 0;
+	visibility: hidden;
+	position: absolute;
+	bottom: 0;
+	left: 15px;
+	width: 200px;
+	font-size: 0.8em;
+	z-index: 1;
+	background-color: #0008;
+	padding: 10px;
+	border-radius: 10px;
+	text-align: left;
+	transition: opacity 0.2s, visibility 0.2s;
+	cursor: default;
+}
+
+.tooltip:hover .tip {
+	opacity: 1;
+	visibility: visible;
+}
+
+.popupwindow {
+	display: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background: #0004;
+	display: grid;
+	place-items: center;
+	z-index: 2;
+}
+
+.popup {
+	background: #0008;
+	padding: 40px;
+	border-radius: 20px;
+}
+
+.popup textarea {
+	display: block;
+	background: #0008;
+	color: #eee;
+	outline: none;
+	border: 1px solid transparent;
+	transition: border 0.2s;
+	resize: none;
+	padding: 10px;
+	border-radius: 10px;
+}
+
+.popup textarea:focus {
+	outline: none;
+	border: 1px solid var(--base);
+}
+
+.close {
+	float: right;
+	--base: #d63031;
 }

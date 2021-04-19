@@ -57,7 +57,7 @@
 					<a href="https://github.com/cubeDhuang/boids" class="source" target="_blank">source code</a>
 				</header>
 	
-				<p>
+				<p class="info">
 					left and right click to move the boids, or just watch their flocking patterns! <br>
 					double click to make an explosion <br>
 					middle click or click in the top right to toggle this menu <br>
@@ -73,6 +73,11 @@
 				<div class="resetters">
 					<button @click="restart">restart simulation</button>
 					<button @click="reset">reset settings</button>
+				</div>
+
+				<div class="resetters">
+					<button @click="exportSave">export settings</button>
+					<button @click="special.inImport = true">import settings</button>
 				</div>
 	
 				<p>number of boids: {{ boids }}</p>
@@ -121,6 +126,20 @@
 	
 				<p>alignment force: {{ alignment }}</p>
 				<input type="range" min="0" max="4" step="0.1" v-model="ralignment">
+
+				<p>
+					alignment bias: {{ rbias }}
+					<span class="tooltip">
+						?
+						<span class="tip">
+							how much a boid will align towards other boids.
+							values greater than 1 mean that it will be biased towards
+							other boids facing the same direction,
+							while values lower than 1 mean the opposite.
+						</span>
+					</span>
+				</p>
+				<input type="range" min="0.1" max="2" step="0.05" v-model="rbias">
 	
 				<p>cohesion force: {{ cohesion }}</p>
 				<input type="range" min="0" max="4" step="0.1" v-model="rcohesion">
@@ -132,7 +151,7 @@
 				<input type="range" min="0" max="1" step="0.05" v-model="rmaxForce">
 				
 				<p>min speed: {{ minSpeed }}</p>
-				<input type="range" min="0" :max="maxSpeed" step="0.25" v-model="rminSpeed">
+				<input type="range" min="0" :max="maxSpeed" step="0.1" v-model="rminSpeed">
 	
 				<p>max speed: {{ maxSpeed }}</p>
 				<input type="range" min="0" max="12" step="0.5" v-model="rmaxSpeed">
@@ -152,10 +171,6 @@
 				<div v-if="debug">
 					<p :key="special.rerender">fps: {{ special.fps.toFixed(1) }}</p>
 					<div>
-						<input type="checkbox" id="indices" v-model="indices">
-						<label for="indices"> show boid indices</label>
-					</div>
-					<div>
 						<input type="checkbox" id="buckets" v-model="buckets">
 						<label for="buckets"> show spatial subdivision</label>
 					</div>
@@ -166,6 +181,22 @@
 			<div id="toggler" :class="menu ? '' : 'hidden'" @click="menu = !menu">
 				<div class="img">
 					<img src="./right-arrow.svg" alt="arrow" :class="toggle ? 'gone' : ''">
+				</div>
+			</div>
+
+			<div style="opacity: 0" :style="{ opacity: 1 }" class="popupwindow" v-if="special.inExport || special.inImport">
+				<div class="popup" v-if="special.inExport">
+					<h3>export settings</h3>
+					<textarea id="exporter" cols="30" rows="10">{{ special.save }}</textarea>
+					<button @click="copy">copy</button>
+					<button @click="special.inExport = false" class="close">close</button>
+				</div>
+
+				<div class="popup" v-else>
+					<h3>import settings</h3>
+					<textarea placeholder="paste your exported settings here..." id="importer" cols="30" rows="10" v-model="special.inSave"></textarea>
+					<button @click="importSave">import</button>
+					<button @click="special.inImport = false" class="close">close</button>
 				</div>
 			</div>
 		</div>
