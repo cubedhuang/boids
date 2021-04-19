@@ -15,7 +15,7 @@ function getDefaults() {
 		raccuracy: 5,
 		rvision: 25,
 		ralignment: 1,
-		rbias: 1.2,
+		rbias: 1.5,
 		rcohesion: 1,
 		rseparation: 1,
 		rmaxForce: 0.2,
