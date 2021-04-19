@@ -3,7 +3,14 @@ class Flock {
 		this.length = boids;
 		this.boids = [];
 		this.buckets = [];
-		this.space = {};
+		this.space = {
+			shape: null,
+			scale: null,
+			gwidth: null,
+			gheight: null,
+			width: null,
+			height: null,
+		};
 		this.organize();
 		this.reset();
 	}
@@ -68,16 +75,16 @@ class Flock {
 	
 			this.space.gwidth = g.width;
 			this.space.gheight = g.height;
-			this.space.width = Math.ceil(g.width / this.space.scale) * this.space.scale;
-			this.space.height = Math.ceil(g.height / this.space.scale) * this.space.scale;
+			this.space.width = Math.ceil(g.width / s) * s;
+			this.space.height = Math.ceil(g.height / s) * s;
 			const shape = this.space.shape ??= new PIXI.Graphics();
 
 			shape.clear();
 			shape.lineStyle(0.5, 0xffffff);
 			
-			for (let row = 0; row < this.space.height; row += this.space.scale) {
-				for (let col = 0; col < this.space.width; col += this.space.scale) {
-					shape.drawRect(col, row, this.space.scale, this.space.scale);
+			for (let row = 0; row < this.space.height; row += s) {
+				for (let col = 0; col < this.space.width; col += s) {
+					shape.drawRect(col, row, s, s);
 				}
 			}
 

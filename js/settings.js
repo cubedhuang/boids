@@ -14,10 +14,10 @@ function getDefaults() {
 		bounce: false,
 		raccuracy: 5,
 		rvision: 25,
-		ralignment: 1,
+		ralignment: 1.1,
 		rbias: 1.5,
 		rcohesion: 1,
-		rseparation: 1,
+		rseparation: 1.1,
 		rmaxForce: 0.2,
 		rminSpeed: 1,
 		rmaxSpeed: 4,
@@ -92,6 +92,11 @@ const opt = new Vue({
 
 		rbias(val) {
 			g.bias = parseFloat(val);
+		},
+
+		["special.inImport"](val) {
+			console.log("test");
+			if (val) this.special.inSave = "";
 		}
 	},
 
@@ -170,7 +175,6 @@ const opt = new Vue({
 			}
 
 			this.special.inImport = false;
-			this.special.inSave = "";
 		},
 
 		copy() {

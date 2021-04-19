@@ -175,7 +175,6 @@
 						<label for="buckets"> show spatial subdivision</label>
 					</div>
 				</div>
-	
 			</div>
 
 			<div id="toggler" :class="menu ? '' : 'hidden'" @click="menu = !menu">
@@ -187,14 +186,15 @@
 			<div style="opacity: 0" :style="{ opacity: 1 }" class="popupwindow" v-if="special.inExport || special.inImport">
 				<div class="popup" v-if="special.inExport">
 					<h3>export settings</h3>
-					<textarea id="exporter" cols="30" rows="10">{{ special.save }}</textarea>
+					<textarea id="exporter" cols="30" rows="10" readonly>{{ special.save }}</textarea>
 					<button @click="copy">copy</button>
 					<button @click="special.inExport = false" class="close">close</button>
 				</div>
 
 				<div class="popup" v-else>
 					<h3>import settings</h3>
-					<textarea placeholder="paste your exported settings here..." id="importer" cols="30" rows="10" v-model="special.inSave"></textarea>
+					<textarea placeholder="paste your exported settings here..."
+						id="importer" cols="30" rows="10" v-model="special.inSave"></textarea>
 					<button @click="importSave">import</button>
 					<button @click="special.inImport = false" class="close">close</button>
 				</div>

@@ -52,15 +52,15 @@ const app = new PIXI.Application({
 	backgroundColor: 0x161616
 });
 
-document.body.appendChild(app.view);
+document.body.prepend(app.view);
 
 let flock = new Flock(opt.boids);
 
 function loop(delta) {
 	g.delta = delta;
 
-	g.mouseForce = max(opt.maxForce *
-		(opt.alignment + opt.cohesion + opt.separation + 1) / 4, 0);
+	g.mouseForce = max(opt.maxSpeed * opt.maxForce *
+		(opt.alignment + opt.cohesion + opt.separation + 1) / 16, 0);
 	g.vis = opt.vision;
 	g.sqVis = g.vis * g.vis;
 

@@ -86,7 +86,7 @@ class Boid extends V2D {
 	}
 
 	interact() {
-		if (opt.particle) {
+		if (opt.particle || g.vis === 0) {
 			this.acc.zero();
 		}
 

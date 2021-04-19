@@ -1,7 +1,7 @@
 // i made this library and it has jsdoc but it's not released or anything
 
 /**
- * 2-dimensional vector library
+ * 2D vector
  */
 class V2D {
 	/**
