@@ -170,6 +170,7 @@ const opt = new Vue({
 			}
 
 			this.special.inImport = false;
+			this.special.inSave = "";
 		},
 
 		copy() {
