@@ -1,8 +1,17 @@
-function random(a, b) {
-	if (b === undefined)
-		return Math.random() * a;
-	return Math.random() * (b - a) + a;
-}
+const random = (() => {
+	const size = 100000;
+	const lookup = [];
+	let i = 0;
+
+	for (let i = 0; i < size; i++) {
+		lookup.push(Math.random());
+	}
+
+	return (a, b) => {
+		const r = lookup[++i >= size ? i = 0 : i];
+		return b ? r * (b - a) + a : r * a;
+	};
+})();
 
 function max(a, b) {
 	if (a >= b) return a;
@@ -10,8 +19,8 @@ function max(a, b) {
 }
 
 function constrain(x, a, b) {
-	if (x < a) return a;
-	if (x > b) return b;
+	if (x <= a) return a;
+	if (x >= b) return b;
 	return x;
 }
 

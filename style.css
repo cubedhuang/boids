@@ -393,11 +393,12 @@ button:active {
 	border-bottom: 1px dotted #fff8;
 	opacity: 0.8;
 	position: relative;
-	display: inline-block;
+	display: block;
 	width: 10px;
 	text-align: center;
 	margin-left: 10px;
 	cursor: help;
+	float: right;
 }
 
 .tooltip .tip {
@@ -405,11 +406,10 @@ button:active {
 	visibility: hidden;
 	position: absolute;
 	bottom: 0;
-	left: 15px;
+	right: 15px;
 	width: 200px;
 	font-size: 0.8em;
-	z-index: 1;
-	background-color: #0008;
+	background-color: #000b;
 	padding: 10px;
 	border-radius: 10px;
 	text-align: left;

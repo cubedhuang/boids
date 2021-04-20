@@ -12,24 +12,7 @@
 		<meta property="og:url" content="https://boids.cubedhuang.com/">
 		<meta property="og:image" content="https://cubedhuang.com/logo.png">
 
-		<link rel="apple-touch-icon" sizes="57x57" href="https://cubedhuang.com/apple-icon-57x57.png">
-		<link rel="apple-touch-icon" sizes="60x60" href="https://cubedhuang.com/apple-icon-60x60.png">
-		<link rel="apple-touch-icon" sizes="72x72" href="https://cubedhuang.com/apple-icon-72x72.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="https://cubedhuang.com/apple-icon-76x76.png">
-		<link rel="apple-touch-icon" sizes="114x114" href="https://cubedhuang.com/apple-icon-114x114.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="https://cubedhuang.com/apple-icon-120x120.png">
-		<link rel="apple-touch-icon" sizes="144x144" href="https://cubedhuang.com/apple-icon-144x144.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="https://cubedhuang.com/apple-icon-152x152.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="https://cubedhuang.com/apple-icon-180x180.png">
-		<link rel="icon" type="image/png" sizes="192x192"  href="https://cubedhuang.com/android-icon-192x192.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="https://cubedhuang.com/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="96x96" href="https://cubedhuang.com/favicon-96x96.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="https://cubedhuang.com/favicon-16x16.png">
 		<link rel="shortcut icon" href="https://cubedhuang.com/favicon.ico">
-		<link rel="manifest" href="https://cubedhuang.com/manifest.json">
-		<meta name="msapplication-TileColor" content="#ffffff">
-		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-		<meta name="theme-color" content="#2ecc71">
 
 		<link rel="stylesheet" href="./style.css">
 		<link rel="canonical" href="https://boids.cubedhuang.com/">
@@ -118,7 +101,17 @@
 					<label for="bounce"> bounce off of edges</label>
 				</div>
 	
-				<p>movement accuracy: {{ accuracy || "perfect" }}</p>
+				<p>
+					movement accuracy: {{ accuracy || "perfect" }}
+					<span class="tooltip">
+						?
+						<span class="tip">
+							the maximum number of boids in vision
+							that each boid checks - higher values can cause
+							lag with more boids
+						</span>
+					</span>
+				</p>
 				<input type="range" min="2" max="10" step="0.2" v-model="raccuracy">
 	
 				<p>boid vision: {{ vision }}</p>
@@ -139,7 +132,7 @@
 						</span>
 					</span>
 				</p>
-				<input type="range" min="0.05" max="2" step="0.05" v-model="rbias">
+				<input type="range" min="0.25" max="4" step="0.05" v-model="rbias">
 	
 				<p>cohesion force: {{ cohesion }}</p>
 				<input type="range" min="0" max="4" step="0.1" v-model="rcohesion">
