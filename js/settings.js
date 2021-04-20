@@ -63,7 +63,9 @@ function getDefaults() {
 			inImport: false,
 
 			save: "",
-			inSave: ""
+			inSave: "",
+
+			randoms: 0
 		},
 	}
 }

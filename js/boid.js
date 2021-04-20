@@ -99,7 +99,7 @@ class Boid extends V2D {
 			const d = mv.sqrDist(this);
 
 			mv.sub(this)
-				.setMag(10000 / d || 1)
+				.setMag(10000 / (d || 1))
 				.max(g.mouseForce);
 
 			if (g.mouse.button === 0) {
@@ -115,7 +115,7 @@ class Boid extends V2D {
 			const d = ev.sqrDist(this);
 
 			ev.sub(this)
-				.setMag(g.explode * 100000 / d || 1)
+				.setMag(g.explode * 100000 / (d || 1))
 				.max(g.mouseForce * 3);
 
 			this.acc.sub(ev);

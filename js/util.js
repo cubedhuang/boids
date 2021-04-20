@@ -1,14 +1,18 @@
 const random = (() => {
-	const size = 100000;
-	const lookup = [];
-	let i = 0;
+	const size = 2 ** 16;
+	const lookup = new Array(size);
+	let i = -1;
 
 	for (let i = 0; i < size; i++) {
-		lookup.push(Math.random());
+		lookup[i] = Math.random();
 	}
 
 	return (a, b) => {
-		const r = lookup[++i >= size ? i = 0 : i];
+		if (++i >= size) {
+			i = 0;
+			opt.special.randoms++;
+		}
+		const r = lookup[i];
 		return b ? r * (b - a) + a : r * a;
 	};
 })();

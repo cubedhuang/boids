@@ -162,7 +162,10 @@
 				</div>
 	
 				<div v-if="debug">
-					<p :key="special.rerender">fps: {{ special.fps.toFixed(1) }}</p>
+					<p>
+						fps: {{ special.fps.toFixed(1) }} <br>
+						random lookup cycles: {{ special.randoms }}
+					</p>
 					<div>
 						<input type="checkbox" id="buckets" v-model="buckets">
 						<label for="buckets"> show spatial subdivision</label>

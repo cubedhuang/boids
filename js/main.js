@@ -35,9 +35,9 @@ const g = {
 	},
 
 	delta: 1,
-	bias: parseFloat(opt.rbias),
-
 	shapeMode: 1,
+	
+	bias: parseFloat(opt.rbias),
 	noiseRange: Math.PI / 80 * opt.noise
 }
 
