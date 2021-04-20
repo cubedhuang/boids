@@ -40,11 +40,11 @@ body {
 #container {
 	background-color: #0006;
 	width: calc(min(100%, 500px) - 40px);
-	height: calc(100vh - 80px);
+	height: calc(100vh - 60px);
 	padding: 20px 30px 50px 30px;
 	overflow: auto;
 	position: absolute;
-	top: 40px;
+	top: 30px;
 	right: 0;
 	border-radius: 20px 0 0 20px;
 

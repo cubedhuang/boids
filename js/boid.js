@@ -51,17 +51,20 @@ class Boid extends V2D {
 
 		let [ns, ds] = this.neighbors(flock);
 
-		let i = 0;
-		for (const other of ns) {
-			const mult = g.bias ** other.vel.dot(this.vel);
+		for (let i = 0; i < ns.length; i++) {
+			const other = ns[i];
 
-			aln.add(V2D.mult(other.vel, mult));
+			// alignment is the average of velocity * bias strength ^ dot
+			const b = g.bias ** other.vel.dot(this.vel);
+			aln.sclAdd(other.vel, b);
+
+			// cohesion finds the average of positions
 			csn.add(other);
 
-			let diff = V2D.sub(this, other);
-			sep.sclAdd(diff, 1 / (ds[i] || 1));
-
-			i++;
+			// separation is stronger for closer boids, so it's multiplied by d
+			const d = 1 / (ds[i] || 0.00001);
+			sep.x += (this.x - other.x) * d;
+			sep.y += (this.y - other.y) * d;
 		}
 
 		if (ns.length > 0) {
