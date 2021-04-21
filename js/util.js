@@ -1,5 +1,5 @@
 const random = (() => {
-	const size = 2 ** 16;
+	const size = 1e6;
 	const lookup = new Array(size);
 	let i = -1;
 
@@ -8,11 +8,7 @@ const random = (() => {
 	}
 
 	return (a, b) => {
-		if (++i >= size) {
-			i = 0;
-			opt.special.randoms++;
-		}
-		const r = lookup[i];
+		const r = lookup[i >= size ? i = 0 : ++i];
 		return b ? r * (b - a) + a : r * a;
 	};
 })();

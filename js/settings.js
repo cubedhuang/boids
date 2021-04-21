@@ -64,8 +64,6 @@ function getDefaults() {
 
 			save: "",
 			inSave: "",
-
-			randoms: 0
 		},
 	}
 }
