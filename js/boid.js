@@ -51,9 +51,8 @@ class Boid extends V2D {
 
 		let [ns, ds] = this.neighbors(flock);
 
-		for (let i = 0; i < ns.length; i++) {
-			const other = ns[i];
-
+		let i = 0;
+		for (const other of ns) {
 			// alignment is the average of velocity * bias strength ^ dot
 			const b = g.bias ** other.vel.dot(this.vel);
 			aln.sclAdd(other.vel, b);
@@ -65,6 +64,8 @@ class Boid extends V2D {
 			const d = 1 / (ds[i] || 0.00001);
 			sep.x += (this.x - other.x) * d;
 			sep.y += (this.y - other.y) * d;
+
+			i++;
 		}
 
 		if (ns.length > 0) {

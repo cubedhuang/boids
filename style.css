@@ -450,6 +450,7 @@ button:active {
 	resize: none;
 	padding: 10px;
 	border-radius: 10px;
+	width: 100%;
 }
 
 .popup textarea:focus {
