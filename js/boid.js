@@ -54,7 +54,7 @@ class Boid extends V2D {
 		let i = 0;
 		for (const other of ns) {
 			// alignment is the average of velocity * bias strength ^ dot
-			const b = g.bias ** other.vel.dot(this.vel);
+			const b = opt.bias ** other.vel.dot(this.vel);
 			aln.sclAdd(other.vel, b);
 
 			// cohesion finds the average of positions
@@ -87,7 +87,7 @@ class Boid extends V2D {
 	}
 
 	interact() {
-		if (opt.particle || g.vis === 0) {
+		if (opt.particle || opt.vision === 0) {
 			this.acc.zero();
 		}
 
@@ -195,7 +195,7 @@ class Boid extends V2D {
 			if (opt.areas || opt.outlines) {
 				this.shape.beginFill(0xffffff, opt.areas ? 0.03 : 0);
 				this.shape.lineStyle(opt.outlines ? 0.5 : 0, 0xffffff, 0.2);
-				this.shape.drawCircle(0, 0, g.vis);
+				this.shape.drawCircle(0, 0, opt.vision);
 				this.shape.endFill();
 			}
 

@@ -32,7 +32,7 @@
 			((e.button === 0 && g.mouse.x >= g.width - 50 && g.mouse.y <= 40) ||
 				e.button === 1)
 		) {
-			opt.menu = !opt.menu;
+			toggleMenu();
 			prevent(e);
 		}
 	}
@@ -57,7 +57,7 @@
 
 	document.addEventListener("keydown", e => {
 		if (e.key === " ") {
-			opt.paused = !opt.paused;
+			togglePause();
 			prevent(e);
 		}
 

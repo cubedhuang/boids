@@ -435,9 +435,13 @@ button:active {
 	display: grid;
 	place-items: center;
 	z-index: 2;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.2s, visibility 0.2s;
 }
 
 .popup {
+	display: none;
 	background: #0008;
 	padding: 40px;
 	border-radius: 20px;
@@ -459,6 +463,15 @@ button:active {
 .popup textarea:focus {
 	outline: none;
 	border: 1px solid var(--base);
+}
+
+.visible {
+	visibility: visible;
+	opacity: 1;
+}
+
+.popup.visible {
+	display: block;
 }
 
 .close {

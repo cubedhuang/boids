@@ -2,7 +2,6 @@
 const g = {
 	mouseForce: 0,
 
-	vis: opt.vision,
 	sqVis: opt.vision * opt.vision,
 
 	mouse: {
@@ -38,7 +37,10 @@ const g = {
 	shapeMode: 1,
 
 	bias: parseFloat(opt.rbias),
-	noiseRange: (Math.PI / 80) * opt.noise
+	noiseRange: (Math.PI / 80) * opt.noise,
+
+	fpsA: [],
+	fps: 60
 };
 
 // PIXI app
@@ -66,8 +68,7 @@ function loop(delta) {
 			16,
 		0
 	);
-	g.vis = opt.vision;
-	g.sqVis = g.vis * g.vis;
+	g.sqVis = opt.vision * opt.vision;
 
 	if (!opt.paused) {
 		flock.update();
@@ -94,9 +95,10 @@ function loop(delta) {
 	}
 
 	if (opt.debug) {
-		opt.special.fpsA.push(60 / delta);
-		opt.special.fps = opt.special.fpsA.reduce((a, v) => a + v, 0) / 10;
-		if (opt.special.fpsA.length >= 10) opt.special.fpsA.shift();
+		g.fpsA.push(60 / delta);
+		g.fps = g.fpsA.reduce((a, v) => a + v, 0) / 10;
+		if (g.fpsA.length >= 10) g.fpsA.shift();
+		select("#fps").textContent = g.fps;
 	}
 
 	app.render();

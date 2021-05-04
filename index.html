@@ -42,179 +42,158 @@
 	</head>
 
 	<body>
-		<div id="app">
-			<div id="container" :class="menu ? '' : 'hidden'">
-				<header>
-					<h3>boids</h3>
-					<a href="https://github.com/cubeDhuang/boids" class="source"
-						target="_blank">source code</a>
-				</header>
+		<div id="container">
+			<header>
+				<h3>boids</h3>
+				<a href="https://github.com/cubeDhuang/boids" class="source" target="_blank">
+					source code
+				</a>
+			</header>
 
-				<p class="info">
-					left and right click to move the boids, or just watch their flocking patterns!
-					<br>
-					double click to make an explosion <br>
-					middle click or click in the top right to toggle this menu <br>
-					press space to pause, and use . to advance one frame
-				</p>
+			<p class="info">
+				left and right click to move the boids, or just watch their flocking patterns!
+				<br>
+				double click to make an explosion <br>
+				middle click or click in the top right to toggle this menu <br>
+				press space to pause, and use . to advance one frame
+			</p>
 
-				<div id="pauser">
-					<input type="checkbox" id="pauseButton" v-model="paused">
-					<label for="pauseButton"> </label>
-					<button class="nexter" @click="next">next frame</button>
-				</div>
-
-				<div class="resetters">
-					<button @click="restart">restart simulation</button>
-					<button @click="reset">reset settings</button>
-				</div>
-
-				<div class="resetters">
-					<button @click="exportSave">export settings</button>
-					<button @click="special.inImport = true">import settings</button>
-				</div>
-
-				<p>number of boids: {{ boids }}</p>
-				<input type="range" min="50" max="5000" step="50" v-model="rboids">
-
-				<h4>visual settings</h4>
-
-				<div>
-					<input type="checkbox" id="toggle" v-model="toggle">
-					<label for="toggle"> hide menu toggle (still works)</label>
-				</div>
-				<div>
-					<input type="checkbox" id="desired" v-model="desired">
-					<label for="desired"> show boid desired directions</label>
-				</div>
-				<div>
-					<input type="checkbox" id="hues" v-model="hues">
-					<label for="hues"> change hues to indicate speed</label>
-				</div>
-				<div>
-					<input type="checkbox" id="areas" v-model="areas">
-					<label for="areas"> show vision areas</label>
-				</div>
-				<div>
-					<input type="checkbox" id="outlines" v-model="outlines">
-					<label for="outlines"> show vision outlines</label>
-				</div>
-
-				<h4>boid movement</h4>
-
-				<div>
-					<input type="checkbox" id="particle" v-model="particle">
-					<label for="particle"> particle mode</label>
-				</div>
-
-				<div>
-					<input type="checkbox" id="bounce" v-model="bounce">
-					<label for="bounce"> bounce off of edges</label>
-				</div>
-
-				<p>
-					movement accuracy: {{ accuracy || "perfect" }}
-					<span class="tooltip">
-						?
-						<span class="tip">
-							the maximum number of boids in vision
-							that each boid checks - higher values can cause
-							lag with more boids
-						</span>
-					</span>
-				</p>
-				<input type="range" min="2" max="10" step="0.2" v-model="raccuracy">
-
-				<p>boid vision: {{ vision }}</p>
-				<input type="range" min="0" max="150" step="5" v-model="rvision">
-
-				<p>alignment force: {{ alignment }}</p>
-				<input type="range" min="0" max="4" step="0.1" v-model="ralignment">
-
-				<p>
-					alignment bias: {{ rbias }}
-					<span class="tooltip">
-						?
-						<span class="tip">
-							how much a boid will align towards other boids.
-							values greater than 1 mean that it will be biased towards
-							other boids facing the same direction,
-							while values lower than 1 mean the opposite.
-						</span>
-					</span>
-				</p>
-				<input type="range" min="0.25" max="4" step="0.05" v-model="rbias">
-
-				<p>cohesion force: {{ cohesion }}</p>
-				<input type="range" min="0" max="4" step="0.1" v-model="rcohesion">
-
-				<p>separation force: {{ separation }}</p>
-				<input type="range" min="0" max="4" step="0.1" v-model="rseparation">
-
-				<p>steering force: {{ maxForce }}</p>
-				<input type="range" min="0" max="1" step="0.05" v-model="rmaxForce">
-
-				<p>min speed: {{ minSpeed }}</p>
-				<input type="range" min="0" :max="maxSpeed" step="0.05" v-model="rminSpeed">
-
-				<p>max speed: {{ maxSpeed }}</p>
-				<input type="range" min="0" max="12" step="0.25" v-model="rmaxSpeed">
-
-				<p>drag: {{ drag }}</p>
-				<input type="range" min="0" max="0.05" step="0.001" v-model="rdrag">
-
-				<p>movement randomness: {{ noise }}</p>
-				<input type="range" min="0" max="10" step="0.5" v-model="rnoise">
-
-				<h4>debug info</h4>
-				<div>
-					<input type="checkbox" id="debug" v-model="debug">
-					<label for="debug">show debug info</label>
-				</div>
-
-				<div v-if="debug">
-					<p>
-						fps: {{ special.fps.toFixed(1) }}
-					</p>
-					<div>
-						<input type="checkbox" id="buckets" v-model="buckets">
-						<label for="buckets"> show spatial subdivision</label>
-					</div>
-				</div>
+			<div id="pauser">
+				<input type="checkbox" id="pauseButton" data-model="paused">
+				<label for="pauseButton"> </label>
+				<button class="nexter" data-click="next">next frame</button>
 			</div>
 
-			<div id="toggler" :class="menu ? '' : 'hidden'" @click="menu = !menu">
-				<div class="img">
-					<img src="./right-arrow.svg" alt="arrow" :class="toggle ? 'gone' : ''">
-				</div>
+			<div class="resetters">
+				<button data-click="restart">restart simulation</button>
+				<button data-click="reset">reset settings</button>
 			</div>
 
-			<div style="opacity: 0" :style="{ opacity: 1 }" class="popupwindow"
-				v-if="special.inExport || special.inImport">
-				<div class="popup" v-if="special.inExport">
-					<h3>export settings</h3>
-					<textarea id="exporter" cols="30" rows="10"
-						readonly>{{ special.save }}</textarea>
-					<button @click="copy">copy</button>
-					<button @click="special.inExport = false" class="close">close</button>
-				</div>
+			<div class="resetters">
+				<button data-click="exportSave">export settings</button>
+				<button data-click="importMenu">import settings</button>
+			</div>
 
-				<div class="popup" v-else>
-					<h3>import settings</h3>
-					<textarea placeholder="paste your exported settings here..." id="importer"
-						cols="30" rows="10" v-model="special.inSave"></textarea>
-					<button @click="importSave">import</button>
-					<button @click="special.inImport = false" class="close">close</button>
+			<p>number of boids: <span data-show="boids"></span></p>
+			<input type="range" min="50" max="5000" step="50" data-model="boids">
+
+			<h4>visual settings</h4>
+
+			<div>
+				<input type="checkbox" id="toggle" data-model="toggle">
+				<label for="toggle"> hide menu toggle (still works)</label>
+			</div>
+			<div>
+				<input type="checkbox" id="desired" data-model="desired">
+				<label for="desired"> show boid desired directions</label>
+			</div>
+			<div>
+				<input type="checkbox" id="hues" data-model="hues">
+				<label for="hues"> change hues to indicate speed</label>
+			</div>
+			<div>
+				<input type="checkbox" id="areas" data-model="areas">
+				<label for="areas"> show vision areas</label>
+			</div>
+			<div>
+				<input type="checkbox" id="outlines" data-model="outlines">
+				<label for="outlines"> show vision outlines</label>
+			</div>
+
+			<h4>boid movement</h4>
+
+			<div>
+				<input type="checkbox" id="particle" data-model="particle">
+				<label for="particle"> particle mode</label>
+			</div>
+
+			<div>
+				<input type="checkbox" id="bounce" data-model="bounce">
+				<label for="bounce"> bounce off of edges</label>
+			</div>
+
+			<p>
+				movement accuracy: <span data-show="accuracy"></span>
+			</p>
+			<input type="range" min="2" max="10" step="0.2" data-model="accuracy">
+
+			<p>boid vision: <span data-show="vision"></span></p>
+			<input type="range" min="0" max="150" step="5" data-model="vision">
+
+			<p>alignment force: <span data-show="alignment"></span></p>
+			<input type="range" min="0" max="4" step="0.1" data-model="alignment">
+
+			<p>
+				alignment bias: <span data-show="bias"></span>
+			</p>
+			<input type="range" min="0.25" max="4" step="0.05" data-model="bias">
+
+			<p>cohesion force: <span data-show="cohesion"></span></p>
+			<input type="range" min="0" max="4" step="0.1" data-model="cohesion">
+
+			<p>separation force: <span data-show="separation"></span></p>
+			<input type="range" min="0" max="4" step="0.1" data-model="separation">
+
+			<p>steering force: <span data-show="maxForce"></span></p>
+			<input type="range" min="0" max="1" step="0.05" data-model="maxForce">
+
+			<p>min speed: <span data-show="minSpeed"></span></p>
+			<input type="range" min="0" max="4" step="0.05" data-model="minSpeed">
+
+			<p>max speed: <span data-show="maxSpeed"></span></p>
+			<input type="range" min="0" max="12" step="0.25" data-model="maxSpeed">
+
+			<p>drag: <span data-show="drag"></span></p>
+			<input type="range" min="0" max="0.05" step="0.001" data-model="drag">
+
+			<p>movement randomness: <span data-show="noise"></span></p>
+			<input type="range" min="0" max="10" step="0.5" data-model="noise">
+
+			<h4>debug info</h4>
+			<div>
+				<input type="checkbox" id="debug" data-model="debug">
+				<label for="debug">show debug info</label>
+			</div>
+
+			<div v-if="debug">
+				<p>
+					fps: <span id="fps"></span>
+				</p>
+				<div>
+					<input type="checkbox" id="buckets" data-model="buckets">
+					<label for="buckets"> show spatial subdivision</label>
 				</div>
 			</div>
 		</div>
 
-		<script src="./lib/vue.min.js"></script>
+		<div id="toggler" data-click="toggleMenu">
+			<div class="img">
+				<img src="./right-arrow.svg" alt="arrow">
+			</div>
+		</div>
+
+		<div class="popupwindow" id="popupwindow">
+			<div class="popup" id="export-popup">
+				<h3>export settings</h3>
+				<textarea id="exporter" cols="30" rows="10" readonly></textarea>
+				<button data-click="copy">copy</button>
+				<button data-click="leaveMenu" class="close">close</button>
+			</div>
+
+			<div class="popup" id="import-popup">
+				<h3>import settings</h3>
+				<textarea placeholder="paste your exported settings here..." id="importer" cols="30"
+					rows="10"></textarea>
+				<button data-click="importSave">import</button>
+				<button data-click="leaveMenu" class="close">close</button>
+			</div>
+		</div>
+
 		<script src="./lib/pixi.min.js"></script>
 
 		<script src="./js/v2d.js"></script>
 		<script src="./js/util.js"></script>
-		<script src="./js/settings.js"></script>
+		<script src="./js/opt.js"></script>
 		<script src="./js/boid.js"></script>
 		<script src="./js/flock.js"></script>
 		<script src="./js/main.js"></script>
