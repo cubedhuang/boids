@@ -2,9 +2,9 @@
 	const prevent = e => e.preventDefault();
 
 	const cont = document.getElementById("container");
-	cont.addEventListener("mouseover", () => g.mouse.over = false);
-	cont.addEventListener("mouseout", () => g.mouse.over = true);
-	
+	cont.addEventListener("mouseover", () => (g.mouse.over = false));
+	cont.addEventListener("mouseout", () => (g.mouse.over = true));
+
 	app.view.addEventListener("contextmenu", prevent);
 	cont.addEventListener("contextmenu", prevent);
 
@@ -27,9 +27,11 @@
 		g.mouse.down = true;
 		g.mouse.button = e.button || 0;
 
-		if (e && (
-			(e.button === 0 && g.mouse.x >= g.width - 50 && g.mouse.y <= 40) ||
-			(e.button === 1))) {
+		if (
+			e &&
+			((e.button === 0 && g.mouse.x >= g.width - 50 && g.mouse.y <= 40) ||
+				e.button === 1)
+		) {
 			opt.menu = !opt.menu;
 			prevent(e);
 		}
@@ -58,7 +60,7 @@
 			opt.paused = !opt.paused;
 			prevent(e);
 		}
-	
+
 		if (e.key === "." && opt.paused) {
 			g.nextFrame = true;
 			prevent(e);

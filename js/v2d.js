@@ -69,7 +69,7 @@ class V2D {
 	 * @returns {V2D}
 	 */
 	static div(v, scale) {
-		return new V2D(v.x / scale, v.y / scale)
+		return new V2D(v.x / scale, v.y / scale);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class V2D {
 	 * @returns {string}
 	 */
 	toString(radix = 10) {
-		return `${ this.x.toString(radix)},${ this.y.toString(radix)}`;
+		return `${this.x.toString(radix)},${this.y.toString(radix)}`;
 	}
 
 	/**
@@ -232,7 +232,7 @@ class V2D {
 		this.y = Math.sin(r) * scale;
 		return this;
 	}
-	
+
 	/**
 	 * Rotates the vector by a given angle
 	 * @param {number} angle The angle to rotate the vector in radians

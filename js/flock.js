@@ -9,24 +9,19 @@ class Flock {
 			gwidth: null,
 			gheight: null,
 			width: null,
-			height: null,
+			height: null
 		};
 		this.organize();
 		this.reset();
 	}
 
 	update() {
-		if (this.length !== opt.boids) {
-			this.resize(opt.boids);
-		}
+		if (this.length !== opt.boids) this.resize(opt.boids);
 
-		for (const boid of this.boids) {
-			boid.update();
-		}
-		
+		for (const boid of this.boids) boid.update();
+
 		if (opt.particle || opt.vision === 0)
-			for (const boid of this.boids)
-				boid.interact();
+			for (const boid of this.boids) boid.interact();
 		else {
 			this.organize();
 			for (const boid of this.boids) {
@@ -70,18 +65,22 @@ class Flock {
 
 	organize() {
 		let s = opt.vision;
-		if (this.space.scale !== s || this.space.gwidth !== g.width || this.space.gheight !== g.height) {
+		if (
+			this.space.scale !== s ||
+			this.space.gwidth !== g.width ||
+			this.space.gheight !== g.height
+		) {
 			this.space.scale = s;
-	
+
 			this.space.gwidth = g.width;
 			this.space.gheight = g.height;
 			this.space.width = Math.ceil(g.width / s) * s;
 			this.space.height = Math.ceil(g.height / s) * s;
-			const shape = this.space.shape ??= new PIXI.Graphics();
+			const shape = (this.space.shape ??= new PIXI.Graphics());
 
 			shape.clear();
 			shape.lineStyle(0.5, 0xffffff);
-			
+
 			for (let row = 0; row < this.space.height; row += s) {
 				for (let col = 0; col < this.space.width; col += s) {
 					shape.drawRect(col, row, s, s);
@@ -103,8 +102,7 @@ class Flock {
 	}
 
 	_b(r, c, a) {
-		if (this.buckets[r]?.[c])
-			a.push(...this.buckets[r][c]);
+		if (this.buckets[r]?.[c]) a.push(...this.buckets[r][c]);
 	}
 
 	candidates(boid) {
@@ -113,13 +111,13 @@ class Flock {
 		const row = Math.floor(boid.y / this.space.scale);
 		const col = Math.floor(boid.x / this.space.scale);
 
-		this._b(row    , col    , cand);
-		this._b(row    , col + 1, cand);
-		this._b(row    , col - 1, cand);
-		this._b(row + 1, col    , cand);
+		this._b(row, col, cand);
+		this._b(row, col + 1, cand);
+		this._b(row, col - 1, cand);
+		this._b(row + 1, col, cand);
 		this._b(row + 1, col + 1, cand);
 		this._b(row + 1, col - 1, cand);
-		this._b(row - 1, col    , cand);
+		this._b(row - 1, col, cand);
 		this._b(row - 1, col + 1, cand);
 		this._b(row - 1, col - 1, cand);
 

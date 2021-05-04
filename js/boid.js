@@ -44,7 +44,7 @@ class Boid extends V2D {
 
 	flock(flock) {
 		this.acc.zero();
-		
+
 		const aln = new V2D();
 		const csn = new V2D();
 		const sep = new V2D();
@@ -69,19 +69,16 @@ class Boid extends V2D {
 		}
 
 		if (ns.length > 0) {
-			aln.setMag(opt.maxSpeed)
-				.sub(this.vel)
-				.max(opt.maxForce);
+			aln.setMag(opt.maxSpeed).sub(this.vel).max(opt.maxForce);
 
-			csn.div(ns.length)
+			csn
+				.div(ns.length)
 				.sub(this)
 				.setMag(opt.maxSpeed)
 				.sub(this.vel)
 				.max(opt.maxForce);
-			
-			sep.setMag(opt.maxSpeed)
-				.sub(this.vel)
-				.max(opt.maxForce);
+
+			sep.setMag(opt.maxSpeed).sub(this.vel).max(opt.maxForce);
 		}
 
 		this.acc.sclAdd(aln, opt.alignment);
@@ -116,7 +113,7 @@ class Boid extends V2D {
 			const d = ev.sqrDist(this);
 
 			ev.sub(this)
-				.setMag(g.explode * 100000 / (d || 1))
+				.setMag((g.explode * 100000) / (d || 1))
 				.max(g.mouseForce * 3);
 
 			this.acc.sub(ev);
@@ -126,11 +123,9 @@ class Boid extends V2D {
 	update() {
 		this.vel.add(this.acc);
 
-		if (opt.drag)
-			this.vel.mult(1 - opt.drag);
+		if (opt.drag) this.vel.mult(1 - opt.drag);
 
-		if (opt.noise)
-			this.vel.rotate(random(-g.noiseRange, g.noiseRange));
+		if (opt.noise) this.vel.rotate(random(-g.noiseRange, g.noiseRange));
 
 		if (opt.minSpeed) {
 			if (this.vel.sqrMag() === 0) this.vel.random(opt.minSpeed);
@@ -167,9 +162,13 @@ class Boid extends V2D {
 		this.shape.x = this.x;
 		this.shape.y = this.y;
 		this.shape.rotation = this.vel.angle();
-		
+
 		if (opt.hues)
-			this.shape.tint = hsv(constrain(this.vel.mag() / (opt.maxSpeed * 2), 0, 1), 1, 1);
+			this.shape.tint = hsv(
+				constrain(this.vel.mag() / (opt.maxSpeed * 2), 0, 1),
+				1,
+				1
+			);
 		else this.shape.tint = 0xffffff;
 
 		if (opt.desired && this.acc.sqrMag() > 0.01) {

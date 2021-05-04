@@ -32,7 +32,7 @@ function getDefaults() {
 				menu: "a",
 				paused: "b",
 				rboids: "c",
-			
+
 				toggle: "d",
 				desired: "e",
 				hues: "f",
@@ -52,9 +52,9 @@ function getDefaults() {
 				rmaxSpeed: "s",
 				rdrag: "t",
 				rnoise: "u",
-				
+
 				debug: "v",
-				buckets: "w",
+				buckets: "w"
 			},
 			fpsA: [],
 			fps: 60,
@@ -63,9 +63,9 @@ function getDefaults() {
 			inImport: false,
 
 			save: "",
-			inSave: "",
-		},
-	}
+			inSave: ""
+		}
+	};
 }
 
 const opt = new Vue({
@@ -75,8 +75,7 @@ const opt = new Vue({
 
 	watch: {
 		maxSpeed(v) {
-			if (v < this.rminSpeed)
-				this.rminSpeed = v;
+			if (v < this.rminSpeed) this.rminSpeed = v;
 		},
 
 		toggle(v) {
@@ -84,10 +83,14 @@ const opt = new Vue({
 			else app.stage.removeChild(g.sprites.menu);
 		},
 
-		areas() { g.shapeMode++ },
-		outlines() { g.shapeMode++ },
+		areas() {
+			g.shapeMode++;
+		},
+		outlines() {
+			g.shapeMode++;
+		},
 		noise() {
-			g.noiseRange = Math.PI / 80 * opt.noise;
+			g.noiseRange = (Math.PI / 80) * opt.noise;
 		},
 
 		rbias(val) {
@@ -101,24 +104,44 @@ const opt = new Vue({
 	},
 
 	computed: {
-		boids() { return parseFloat(this.rboids) },
+		boids() {
+			return parseFloat(this.rboids);
+		},
 		// trail() { return parseFloat(this.rtrail) },
 		accuracy() {
 			const v = Math.round(2 ** parseFloat(this.raccuracy));
 			if (v === 1024) return 0;
 			return v;
 		},
-		vision() { return parseFloat(this.rvision) },
-		alignment() { return parseFloat(this.ralignment) },
-		cohesion() { return parseFloat(this.rcohesion) },
-		separation() { return parseFloat(this.rseparation) },
-		maxForce() { return parseFloat(this.rmaxForce) },
-		minSpeed() { return parseFloat(this.rminSpeed) },
-		maxSpeed() { return parseFloat(this.rmaxSpeed) },
-		drag() { return parseFloat(this.rdrag) },
-		noise() { return parseFloat(this.rnoise) },
+		vision() {
+			return parseFloat(this.rvision);
+		},
+		alignment() {
+			return parseFloat(this.ralignment);
+		},
+		cohesion() {
+			return parseFloat(this.rcohesion);
+		},
+		separation() {
+			return parseFloat(this.rseparation);
+		},
+		maxForce() {
+			return parseFloat(this.rmaxForce);
+		},
+		minSpeed() {
+			return parseFloat(this.rminSpeed);
+		},
+		maxSpeed() {
+			return parseFloat(this.rmaxSpeed);
+		},
+		drag() {
+			return parseFloat(this.rdrag);
+		},
+		noise() {
+			return parseFloat(this.rnoise);
+		}
 	},
-	
+
 	methods: {
 		restart() {
 			flock.reset();
@@ -141,11 +164,10 @@ const opt = new Vue({
 
 				const k = this.special.encode[key];
 
-				if (typeof value === "boolean")
-					array.push(`${ k }=${ value ? "1" : "0" }`);
-				else array.push(`${ k }=${ value }`);
+				if (typeof value === "boolean") array.push(`${k}=${value ? "1" : "0"}`);
+				else array.push(`${k}=${value}`);
 			}
-		
+
 			this.special.save = btoa(array.join("|"));
 			this.special.inExport = true;
 		},
@@ -153,7 +175,7 @@ const opt = new Vue({
 		importSave() {
 			const str = this.special.inSave.trim();
 			if (!str) return;
-			
+
 			let split = atob(str).split("|");
 			let args = new Map();
 			for (const arg of split) {
@@ -179,7 +201,7 @@ const opt = new Vue({
 
 		copy() {
 			document.getElementById("exporter").select();
-			document.execCommand('copy');
+			document.execCommand("copy");
 		}
-	},
+	}
 });

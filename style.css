@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Open+Sans:wght@300;400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Open+Sans:wght@300;400;600&display=swap");
 
 :root {
 	/* --base: #ff7675; */
@@ -14,7 +14,8 @@
 	box-sizing: border-box;
 }
 
-*::before, *::after {
+*::before,
+*::after {
 	box-sizing: border-box;
 }
 
@@ -104,16 +105,18 @@ body {
 	width: 10px;
 }
 ::-webkit-scrollbar-track {
-	background: #0004; 
+	background: #0004;
 }
 ::-webkit-scrollbar-thumb {
-	background: #fff4; 
+	background: #fff4;
 }
 ::-webkit-scrollbar-thumb:hover {
-	background: #fff3; 
+	background: #fff3;
 }
 
-h3, h4, h5 {
+h3,
+h4,
+h5 {
 	font-family: var(--title-font);
 	letter-spacing: 2px;
 	filter: drop-shadow(0 0 5px #fff6);
@@ -232,13 +235,13 @@ input[type="checkbox"] {
 	opacity: 0;
 }
 
-label::before{
+label::before {
 	content: "";
 	display: inline-block;
-	
+
 	height: 16px;
 	width: 16px;
-	
+
 	background: #0008;
 	transition: background 0.2s, filter 0.2s;
 
@@ -261,7 +264,7 @@ label::after {
 	border-left: 2px solid;
 	border-bottom: 2px solid;
 	border-color: var(--base);
-	
+
 	transform: rotate(-45deg);
 	transition: opacity 0.1s, border-color 0.2s;
 	opacity: 0;
@@ -297,7 +300,7 @@ label {
 	display: none;
 }
 
-#pauser label::before{
+#pauser label::before {
 	height: 36px;
 	width: 36px;
 
@@ -363,8 +366,8 @@ button {
 	margin-bottom: 5px;
 	box-shadow: 0 4px 0 var(--base);
 	cursor: pointer;
-	transition: background 0.2s, color 0.2s, filter 0.2s,
-		transform 0.1s, box-shadow 0.1s;
+	transition: background 0.2s, color 0.2s, filter 0.2s, transform 0.1s,
+		box-shadow 0.1s;
 }
 
 button:hover {
@@ -466,7 +469,9 @@ button:active {
 /* queries */
 
 @media (prefers-reduced-motion: reduce) {
-	*, *::before, *::after {
+	*,
+	*::before,
+	*::after {
 		animation-delay: -1ms !important;
 		animation-duration: 1ms !important;
 		animation-iteration-count: 1 !important;

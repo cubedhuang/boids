@@ -10,7 +10,7 @@ const g = {
 		y: 0,
 		down: false,
 		over: true,
-		button: 0,
+		button: 0
 	},
 
 	explode: 0,
@@ -31,15 +31,15 @@ const g = {
 			shape.endFill();
 
 			return shape;
-		})(),
+		})()
 	},
 
 	delta: 1,
 	shapeMode: 1,
-	
+
 	bias: parseFloat(opt.rbias),
-	noiseRange: Math.PI / 80 * opt.noise
-}
+	noiseRange: (Math.PI / 80) * opt.noise
+};
 
 // PIXI app
 const app = new PIXI.Application({
@@ -59,8 +59,13 @@ let flock = new Flock(opt.boids);
 function loop(delta) {
 	g.delta = delta;
 
-	g.mouseForce = max(opt.maxSpeed * opt.maxForce *
-		(opt.alignment + opt.cohesion + opt.separation + 1) / 16, 0);
+	g.mouseForce = max(
+		(opt.maxSpeed *
+			opt.maxForce *
+			(opt.alignment + opt.cohesion + opt.separation + 1)) /
+			16,
+		0
+	);
 	g.vis = opt.vision;
 	g.sqVis = g.vis * g.vis;
 
@@ -72,7 +77,7 @@ function loop(delta) {
 	}
 
 	flock.draw();
-	
+
 	if (g.explode === 1) {
 		app.stage.addChild(g.sprites.explode);
 	}
