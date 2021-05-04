@@ -24,7 +24,8 @@ const opt = (() => {
 
 		particle: false,
 		bounce: false,
-		accuracy: 5,
+		accuracyPower: 5,
+		accuracy: 32,
 		vision: 25,
 		alignment: 1.1,
 		bias: 1.5,
@@ -53,7 +54,7 @@ const opt = (() => {
 
 		bounce: "i",
 		particle: "j",
-		accuracy: "k",
+		accuracyPower: "k",
 		vision: "l",
 		alignment: "m",
 		bias: "n",
@@ -100,10 +101,11 @@ const opt = (() => {
 				$min.max = data.maxSpeed;
 
 				if (data.maxSpeed <= data.minSpeed) $min.value = data.maxSpeed;
-			} else if (model === "accuracy") {
-				const v = Math.round(2 ** parseFloat(data.accuracy));
-				if (v === 1024) data.accuracy = 0;
-				data.accuracy = v;
+			} else if (model === "accuracyPower") {
+				data.accuracy = data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
+
+				select(`[data-show=accuracy]`).textContent = Math.floor(data.accuracy);
+				return;
 			}
 
 			select(`[data-show=${model}]`).textContent = data[model];
@@ -120,7 +122,9 @@ const opt = (() => {
 		for (const el of sliders) {
 			const model = el.dataset.model;
 			el.value = data[model];
-			select(`[data-show=${model}]`).textContent = data[model];
+			if (model === "accuracyPower")
+				select(`[data-show=accuracy]`).textContent = data.accuracy;
+			else select(`[data-show=${model}]`).textContent = data[model];
 		}
 	}
 	updateAll();
@@ -186,13 +190,16 @@ const opt = (() => {
 			const str = select("#importer").value.trim();
 			if (!str) return;
 
-			const split = atob(str).split("|");
+			let split;
+			try {
+				split = atob(str).split("|");
+			} catch {
+				return;
+			}
 			const args = new Map();
 			for (const arg of split) {
-				try {
-					const [key, val] = arg.split("=");
-					args.set(key, val);
-				} catch {}
+				const [key, val] = arg.split("=");
+				args.set(key, val);
 			}
 
 			for (const [key, value] of Object.entries(data)) {
@@ -206,6 +213,7 @@ const opt = (() => {
 				}
 			}
 
+			data.accuracy = data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
 			methods.leaveMenu();
 			updateAll();
 		},

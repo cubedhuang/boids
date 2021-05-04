@@ -425,6 +425,21 @@ button:active {
 	visibility: visible;
 }
 
+/* debug menu */
+
+#debug ~ #debug-opts {
+	opacity: 0;
+	display: none;
+	transition: display 0.2s, opacity 0.2s;
+}
+
+#debug:checked ~ #debug-opts {
+	opacity: 1;
+	display: block;
+}
+
+/* popups */
+
 .popupwindow {
 	position: absolute;
 	top: 0;

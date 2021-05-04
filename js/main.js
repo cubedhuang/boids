@@ -98,7 +98,7 @@ function loop(delta) {
 		g.fpsA.push(60 / delta);
 		g.fps = g.fpsA.reduce((a, v) => a + v, 0) / 10;
 		if (g.fpsA.length >= 10) g.fpsA.shift();
-		select("#fps").textContent = g.fps;
+		select("#fps").textContent = g.fps.toFixed(2);
 	}
 
 	app.render();
