@@ -88,6 +88,7 @@ const opt = (() => {
 
 			if (model === "toggle")
 				select("#toggler img").classList.toggle("gone", el.checked);
+			else if (model === "areas" || model === "outlines") g.shapeMode++;
 		});
 	}
 
