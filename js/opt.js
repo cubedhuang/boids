@@ -107,7 +107,7 @@ const opt = (() => {
 
 				select(`[data-show=accuracy]`).textContent = Math.floor(data.accuracy);
 				return;
-			}
+			} else if (model === "vision") g.shapeMode++;
 
 			select(`[data-show=${model}]`).textContent = data[model];
 		});
