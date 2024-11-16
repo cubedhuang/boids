@@ -24,19 +24,25 @@ class Boid extends V2D {
 	}
 
 	neighbors(flock) {
-		const cand = flock.candidates(this);
+		const cands = flock.candidates(this);
 		const ns = [];
 		const ds = [];
 
-		let step = opt.accuracy === 0 ? 1 : Math.ceil(cand.length / opt.accuracy);
+		const candidate_count = cands.map(c => c.length).reduce((a, b) => a + b, 0);
+		let step = opt.accuracy === 0 ? 1 : Math.ceil(candidate_count / opt.accuracy);
+		let i = Math.floor(random(step));
 
-		for (let i = Math.floor(random(step)); i < cand.length; i += step) {
-			if (!cand[i]) break;
-			const d = this.sqrDist(cand[i]);
-			if (d < g.sqVis && this !== cand[i]) {
-				ns.push(cand[i]);
-				ds.push(d);
+		for (const c of cands) {
+			for (; i < c.length; i += step) {
+				if (this === c[i]) continue;
+
+				const d = this.sqrDist(c[i]);
+				if (d < g.sqVis) {
+					ns.push(c[i]);
+					ds.push(d);
+				}
 			}
+			i -= c.length;
 		}
 
 		return [ns, ds];

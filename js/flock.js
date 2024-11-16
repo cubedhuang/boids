@@ -102,9 +102,10 @@ class Flock {
 	}
 
 	_b(r, c, a) {
-		if (this.buckets[r]?.[c]) a.push(...this.buckets[r][c]);
+		if (this.buckets[r]?.[c]) a.push(this.buckets[r][c]);
 	}
 
+	// Returns a list of lists of boids, where each sublist contains the boids in a nearby cell
 	candidates(boid) {
 		const cand = [];
 
