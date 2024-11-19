@@ -129,7 +129,7 @@ class Boid extends V2D {
 	}
 
 	update() {
-		this.vel.add(this.acc);
+		this.vel.sclAdd(this.acc, g.delta);
 
 		if (opt.drag) this.vel.mult(1 - opt.drag);
 
