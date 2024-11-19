@@ -164,7 +164,8 @@ const opt = new Vue({
 
 				const k = this.special.encode[key];
 
-				if (typeof value === "boolean") array.push(`${k}=${value ? "1" : "0"}`);
+				if (typeof value === "boolean")
+					array.push(`${k}=${value ? "1" : "0"}`);
 				else array.push(`${k}=${value}`);
 			}
 

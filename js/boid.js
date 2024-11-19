@@ -28,8 +28,11 @@ class Boid extends V2D {
 		const ns = [];
 		const ds = [];
 
-		const candidate_count = cands.map(c => c.length).reduce((a, b) => a + b, 0);
-		let step = opt.accuracy === 0 ? 1 : Math.ceil(candidate_count / opt.accuracy);
+		const candidate_count = cands
+			.map(c => c.length)
+			.reduce((a, b) => a + b, 0);
+		let step =
+			opt.accuracy === 0 ? 1 : Math.ceil(candidate_count / opt.accuracy);
 		let i = Math.floor(random(step));
 
 		for (const c of cands) {
@@ -77,8 +80,7 @@ class Boid extends V2D {
 		if (ns.length > 0) {
 			aln.setMag(opt.maxSpeed).sub(this.vel).max(opt.maxForce);
 
-			csn
-				.div(ns.length)
+			csn.div(ns.length)
 				.sub(this)
 				.setMag(opt.maxSpeed)
 				.sub(this.vel)

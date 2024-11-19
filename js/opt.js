@@ -103,9 +103,12 @@ const opt = (() => {
 
 				if (data.maxSpeed <= data.minSpeed) $min.value = data.maxSpeed;
 			} else if (model === "accuracyPower") {
-				data.accuracy = data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
+				data.accuracy =
+					data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
 
-				select(`[data-show=accuracy]`).textContent = Math.floor(data.accuracy);
+				select(`[data-show=accuracy]`).textContent = Math.floor(
+					data.accuracy
+				);
 				return;
 			} else if (model === "vision") g.shapeMode++;
 
@@ -166,7 +169,8 @@ const opt = (() => {
 
 				if (!k) continue;
 
-				if (typeof value === "boolean") array.push(`${k}=${value ? "1" : "0"}`);
+				if (typeof value === "boolean")
+					array.push(`${k}=${value ? "1" : "0"}`);
 				else array.push(`${k}=${value}`);
 			}
 
@@ -214,7 +218,8 @@ const opt = (() => {
 				}
 			}
 
-			data.accuracy = data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
+			data.accuracy =
+				data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
 			methods.leaveMenu();
 			updateAll();
 		},
