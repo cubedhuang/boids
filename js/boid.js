@@ -139,7 +139,7 @@ class Boid extends V2D {
 		}
 
 		this.vel.max(opt.maxSpeed);
-		this.add(this.vel);
+		this.sclAdd(this.vel, g.delta);
 
 		if (opt.bounce) {
 			let ran = false;
