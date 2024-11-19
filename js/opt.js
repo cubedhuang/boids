@@ -18,9 +18,11 @@ const opt = (() => {
 
 		toggle: false,
 		desired: false,
+		hideBoids: false,
 		hues: true,
 		areas: false,
 		outlines: false,
+		halfAreas: false,
 
 		particle: false,
 		bounce: false,
@@ -48,9 +50,11 @@ const opt = (() => {
 
 		toggle: "d",
 		desired: "e",
+		hideBoids: "x",
 		hues: "f",
 		areas: "g",
 		outlines: "h",
+		halfAreas: "y",
 
 		bounce: "i",
 		particle: "j",
@@ -88,7 +92,14 @@ const opt = (() => {
 
 			if (model === "toggle")
 				select("#toggler img").classList.toggle("gone", el.checked);
-			else if (model === "areas" || model === "outlines") g.shapeMode++;
+			else if (
+				model === "hideBoids" ||
+				model === "areas" ||
+				model === "outlines" ||
+				model === "halfAreas"
+			) {
+				g.shapeMode++;
+			}
 		});
 	}
 
@@ -130,6 +141,7 @@ const opt = (() => {
 				select(`[data-show=accuracy]`).textContent = data.accuracy;
 			else select(`[data-show=${model}]`).textContent = data[model];
 		}
+		if (typeof g !== "undefined") g.shapeMode++;
 	}
 	updateAll();
 

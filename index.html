@@ -1,41 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport"
-			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-		<meta name="author" content="cubedhuang">
-		<meta name="description" content="2D flocking simulation!">
-		<meta name="keywords" content="cubedhuang, boids, flocking, 2d, simulation">
-		<meta name="theme-color" content="#2f86c9">
+		<meta name="author" content="cubedhuang" />
+		<meta name="description" content="2D flocking simulation!" />
+		<meta
+			name="keywords"
+			content="cubedhuang, boids, flocking, 2d, simulation"
+		/>
+		<meta name="theme-color" content="#2f86c9" />
 
-		<meta property="og:title" content="Boids Simulation">
-		<meta property="description" content="2D flocking simulation!">
-		<meta property="og:description" content="2D flocking simulation!">
-		<meta property="og:url" content="https://boids.cubedhuang.com/">
-		<meta property="og:image" content="https://cubedhuang.com/logo.png">
+		<meta property="og:title" content="Boids Simulation" />
+		<meta property="description" content="2D flocking simulation!" />
+		<meta property="og:description" content="2D flocking simulation!" />
+		<meta property="og:url" content="https://boids.cubedhuang.com/" />
+		<meta property="og:image" content="https://cubedhuang.com/logo.png" />
 
-		<link rel="shortcut icon" href="https://cubedhuang.com/favicon.ico">
+		<link rel="shortcut icon" href="https://cubedhuang.com/favicon.ico" />
 
-		<link rel="stylesheet" href="./style.css">
-		<link rel="canonical" href="https://boids.cubedhuang.com/">
-		<link rel="author" href="https://cubedhuang.com/">
-		<link rel="publisher" href="https://cubedhuang.com/">
+		<link rel="stylesheet" href="./style.css" />
+		<link rel="canonical" href="https://boids.cubedhuang.com/" />
+		<link rel="author" href="https://cubedhuang.com/" />
+		<link rel="publisher" href="https://cubedhuang.com/" />
 
 		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-107754281-2"></script>
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=UA-107754281-2"
+		></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
-			function gtag() { dataLayer.push(arguments); }
-			gtag('js', new Date());
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
 
-			gtag('config', 'UA-107754281-2');
+			gtag("config", "UA-107754281-2");
 		</script>
 		<!-- Cloudflare Web Analytics -->
-		<script defer src='https://static.cloudflareinsights.com/beacon.min.js'
-			data-cf-beacon='{"token": "52dcb98c1a10492682592c6cfe35319d"}'></script>
+		<script
+			defer
+			src="https://static.cloudflareinsights.com/beacon.min.js"
+			data-cf-beacon='{"token": "52dcb98c1a10492682592c6cfe35319d"}'
+		></script>
 		<!-- End Cloudflare Web Analytics -->
 
 		<title>Boids Simulation</title>
@@ -45,21 +58,27 @@
 		<div id="container">
 			<header>
 				<h3>boids</h3>
-				<a href="https://github.com/cubeDhuang/boids" class="source" target="_blank">
+				<a
+					href="https://github.com/cubeDhuang/boids"
+					class="source"
+					target="_blank"
+				>
 					source code
 				</a>
 			</header>
 
 			<p class="info">
-				left and right click to move the boids, or just watch their flocking patterns!
-				<br>
-				double click to make an explosion <br>
-				middle click or click in the top right to toggle this menu <br>
+				left and right click to move the boids, or just watch their
+				flocking patterns!
+				<br />
+				double click to make an explosion <br />
+				middle click or click in the top right to toggle this menu
+				<br />
 				press space to pause, and use . to advance one frame
 			</p>
 
 			<div id="pauser">
-				<input type="checkbox" id="pauseButton" data-model="paused">
+				<input type="checkbox" id="pauseButton" data-model="paused" />
 				<label for="pauseButton"> </label>
 				<button class="nexter" data-click="next">next frame</button>
 			</div>
@@ -75,40 +94,64 @@
 			</div>
 
 			<p>number of boids: <span data-show="boids"></span></p>
-			<input type="range" min="50" max="5000" step="50" data-model="boids">
+			<input
+				type="range"
+				min="50"
+				max="5000"
+				step="50"
+				data-model="boids"
+			/>
 
 			<h4>visual settings</h4>
 
 			<div>
-				<input type="checkbox" id="toggle" data-model="toggle">
+				<input type="checkbox" id="toggle" data-model="toggle" />
 				<label for="toggle"> hide menu toggle (still works)</label>
 			</div>
 			<div>
-				<input type="checkbox" id="desired" data-model="desired">
+				<input type="checkbox" id="desired" data-model="desired" />
 				<label for="desired"> show boid desired directions</label>
 			</div>
 			<div>
-				<input type="checkbox" id="hues" data-model="hues">
+				<input type="checkbox" id="hideBoids" data-model="hideBoids" />
+				<label for="hideBoids"> completely hide boids (for art?)</label>
+			</div>
+			<div>
+				<input type="checkbox" id="hues" data-model="hues" />
 				<label for="hues"> change hues to indicate speed</label>
 			</div>
 			<div>
-				<input type="checkbox" id="areas" data-model="areas">
+				<input type="checkbox" id="areas" data-model="areas" />
 				<label for="areas"> show vision areas</label>
 			</div>
 			<div>
-				<input type="checkbox" id="outlines" data-model="outlines">
+				<input type="checkbox" id="outlines" data-model="outlines" />
 				<label for="outlines"> show vision outlines</label>
+			</div>
+			<div>
+				<input type="checkbox" id="halfAreas" data-model="halfAreas" />
+				<label for="halfAreas">
+					halve shown vision area size
+					<span class="tooltip">
+						?
+						<span class="tip">
+							so boids interact when their circles "collide"
+							rather than when their circles intersect each
+							others' centers
+						</span>
+					</span>
+				</label>
 			</div>
 
 			<h4>boid movement</h4>
 
 			<div>
-				<input type="checkbox" id="particle" data-model="particle">
+				<input type="checkbox" id="particle" data-model="particle" />
 				<label for="particle"> particle mode</label>
 			</div>
 
 			<div>
-				<input type="checkbox" id="bounce" data-model="bounce">
+				<input type="checkbox" id="bounce" data-model="bounce" />
 				<label for="bounce"> bounce off of edges</label>
 			</div>
 
@@ -117,66 +160,129 @@
 				<span class="tooltip">
 					?
 					<span class="tip">
-						the maximum number of boids in vision
-						that each boid checks - higher values can cause
-						lag with more boids
+						the maximum number of boids in vision that each boid
+						checks - higher values can cause lag with more boids
 					</span>
 				</span>
 			</p>
-			<input type="range" min="2.25" max="10" step="0.25" data-model="accuracyPower">
+			<input
+				type="range"
+				min="2.25"
+				max="10"
+				step="0.25"
+				data-model="accuracyPower"
+			/>
 
 			<p>boid vision: <span data-show="vision"></span></p>
-			<input type="range" min="0" max="150" step="5" data-model="vision">
+			<input
+				type="range"
+				min="0"
+				max="150"
+				step="5"
+				data-model="vision"
+			/>
 
 			<p>alignment force: <span data-show="alignment"></span></p>
-			<input type="range" min="0" max="4" step="0.1" data-model="alignment">
+			<input
+				type="range"
+				min="0"
+				max="4"
+				step="0.1"
+				data-model="alignment"
+			/>
 
 			<p>
 				alignment bias: <span data-show="bias"></span>
 				<span class="tooltip">
 					?
 					<span class="tip">
-						how much a boid will align towards other boids.
-						values greater than 1 mean that it will be biased towards
-						other boids facing the same direction,
-						while values lower than 1 mean the opposite.
+						how much a boid will align towards other boids. values
+						greater than 1 mean that it will be biased towards other
+						boids facing the same direction, while values lower than
+						1 mean the opposite.
 					</span>
 				</span>
 			</p>
-			<input type="range" min="0.25" max="4" step="0.05" data-model="bias">
+			<input
+				type="range"
+				min="0.25"
+				max="4"
+				step="0.05"
+				data-model="bias"
+			/>
 
 			<p>cohesion force: <span data-show="cohesion"></span></p>
-			<input type="range" min="0" max="4" step="0.1" data-model="cohesion">
+			<input
+				type="range"
+				min="0"
+				max="4"
+				step="0.1"
+				data-model="cohesion"
+			/>
 
 			<p>separation force: <span data-show="separation"></span></p>
-			<input type="range" min="0" max="4" step="0.1" data-model="separation">
+			<input
+				type="range"
+				min="0"
+				max="4"
+				step="0.1"
+				data-model="separation"
+			/>
 
 			<p>steering force: <span data-show="maxForce"></span></p>
-			<input type="range" min="0" max="1" step="0.05" data-model="maxForce">
+			<input
+				type="range"
+				min="0"
+				max="1"
+				step="0.05"
+				data-model="maxForce"
+			/>
 
 			<p>min speed: <span data-show="minSpeed"></span></p>
-			<input type="range" min="0" max="4" step="0.05" data-model="minSpeed">
+			<input
+				type="range"
+				min="0"
+				max="4"
+				step="0.05"
+				data-model="minSpeed"
+			/>
 
 			<p>max speed: <span data-show="maxSpeed"></span></p>
-			<input type="range" min="0" max="12" step="0.25" data-model="maxSpeed">
+			<input
+				type="range"
+				min="0"
+				max="12"
+				step="0.25"
+				data-model="maxSpeed"
+			/>
 
 			<p>drag: <span data-show="drag"></span></p>
-			<input type="range" min="0" max="0.05" step="0.001" data-model="drag">
+			<input
+				type="range"
+				min="0"
+				max="0.05"
+				step="0.001"
+				data-model="drag"
+			/>
 
 			<p>movement randomness: <span data-show="noise"></span></p>
-			<input type="range" min="0" max="10" step="0.5" data-model="noise">
+			<input
+				type="range"
+				min="0"
+				max="10"
+				step="0.5"
+				data-model="noise"
+			/>
 
 			<h4>debug info</h4>
 
-			<input type="checkbox" id="debug" data-model="debug">
+			<input type="checkbox" id="debug" data-model="debug" />
 			<label for="debug">show debug info</label>
 
 			<div id="debug-opts">
-				<p>
-					fps: <span id="fps"></span>
-				</p>
+				<p>fps: <span id="fps"></span></p>
 				<div>
-					<input type="checkbox" id="buckets" data-model="buckets">
+					<input type="checkbox" id="buckets" data-model="buckets" />
 					<label for="buckets"> show spatial subdivision</label>
 				</div>
 			</div>
@@ -184,7 +290,7 @@
 
 		<div id="toggler" data-click="toggleMenu">
 			<div class="img">
-				<img src="./right-arrow.svg" alt="arrow">
+				<img src="./right-arrow.svg" alt="arrow" />
 			</div>
 		</div>
 
@@ -198,8 +304,12 @@
 
 			<div class="popup" id="import-popup">
 				<h3>import settings</h3>
-				<textarea placeholder="paste your exported settings here..." id="importer" cols="30"
-					rows="10"></textarea>
+				<textarea
+					placeholder="paste your exported settings here..."
+					id="importer"
+					cols="30"
+					rows="10"
+				></textarea>
 				<button data-click="importSave">import</button>
 				<button data-click="leaveMenu" class="close">close</button>
 			</div>

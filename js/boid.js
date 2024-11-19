@@ -13,9 +13,9 @@ class Boid extends V2D {
 		this.desired = new PIXI.Graphics();
 		this.desired.clear();
 		this.desired.beginFill();
-		this.desired.lineStyle(2, hsv(0.9, 1, 1));
+		this.desired.lineStyle(2, hsv(0.9, 5, 1));
 		this.desired.moveTo(0, 0);
-		this.desired.lineTo(12, 0);
+		this.desired.lineTo(24, 0);
 		this.desired.endFill();
 		this.desired.alpha = 0;
 
@@ -191,19 +191,25 @@ class Boid extends V2D {
 		if (this.shapeMode !== g.shapeMode) {
 			this.shape.clear();
 
-			this.shape.beginFill(0xffffff);
-			this.shape.lineStyle();
-			this.shape.moveTo(6, 0);
-			this.shape.lineTo(-6, -4);
-			this.shape.lineTo(-4, 0);
-			this.shape.lineTo(-6, 4);
-			this.shape.lineTo(6, 0);
-			this.shape.endFill();
+			if (!opt.hideBoids) {
+				this.shape.beginFill(0xffffff);
+				this.shape.lineStyle();
+				this.shape.moveTo(6, 0);
+				this.shape.lineTo(-6, -4);
+				this.shape.lineTo(-4, 0);
+				this.shape.lineTo(-6, 4);
+				this.shape.lineTo(6, 0);
+				this.shape.endFill();
+			}
 
 			if (opt.areas || opt.outlines) {
 				this.shape.beginFill(0xffffff, opt.areas ? 0.03 : 0);
 				this.shape.lineStyle(opt.outlines ? 0.5 : 0, 0xffffff, 0.2);
-				this.shape.drawCircle(0, 0, opt.vision);
+				this.shape.drawCircle(
+					0,
+					0,
+					opt.halfAreas ? opt.vision / 2 : opt.vision
+				);
 				this.shape.endFill();
 			}
 
