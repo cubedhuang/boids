@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -57,7 +57,7 @@
 	<body>
 		<div id="container">
 			<header>
-				<h3>boids</h3>
+				<h1>boids</h1>
 				<a
 					href="https://github.com/cubeDhuang/boids"
 					class="source"
@@ -67,19 +67,22 @@
 				</a>
 			</header>
 
-			<p class="info">
-				left and right click to move the boids, or just watch their
-				flocking patterns!
-				<br />
-				double click to make an explosion <br />
-				middle click or click in the top right to toggle this menu
-				<br />
-				press space to pause, and use . to advance one frame
-			</p>
+			<div class="info">
+				<p>
+					<key>left click</key> and <key>right click</key> to interact
+					with the boids, or just watch their flocking patterns!
+				</p>
+				<p><key>double click</key> to cause an explosion.</p>
+				<p><key>middle click</key> to toggle this menu.</p>
+				<p>
+					press <key>space</key> to pause, and use <key>.</key> to
+					advance one frame.
+				</p>
+			</div>
 
 			<div id="pauser">
 				<input type="checkbox" id="pauseButton" data-model="paused" />
-				<label for="pauseButton"> </label>
+				<label for="pauseButton" aria-label="pause"> </label>
 				<button class="nexter" data-click="next">next frame</button>
 			</div>
 
@@ -93,7 +96,7 @@
 				<button data-click="importMenu">import settings</button>
 			</div>
 
-			<p>number of boids: <span data-show="boids"></span></p>
+			<p>boids <span data-show="boids"></span></p>
 			<input
 				type="range"
 				min="50"
@@ -135,9 +138,9 @@
 					<span class="tooltip">
 						?
 						<span class="tip">
-							so boids interact when their circles "collide"
-							rather than when their circles intersect each
-							others' centers
+							boids interact when their circles "collide" rather
+							than when their circles intersect each other's
+							centers.
 						</span>
 					</span>
 				</label>
@@ -148,6 +151,13 @@
 			<div>
 				<input type="checkbox" id="particle" data-model="particle" />
 				<label for="particle"> particle mode</label>
+				<span class="tooltip">
+					?
+					<span class="tip">
+						turn off all flocking forces, making boids move like
+						particles affected only by noise, drag, and human input.
+					</span>
+				</span>
 			</div>
 
 			<div>
@@ -156,14 +166,16 @@
 			</div>
 
 			<p>
-				movement accuracy: <span data-show="accuracy"></span>
+				movement accuracy
 				<span class="tooltip">
 					?
 					<span class="tip">
 						the maximum number of boids in vision that each boid
-						checks - higher values can cause lag with more boids
+						interacts with; higher values can cause lag with more
+						boids.
 					</span>
 				</span>
+				<span data-show="accuracy"></span>
 			</p>
 			<input
 				type="range"
@@ -173,7 +185,7 @@
 				data-model="accuracyPower"
 			/>
 
-			<p>boid vision: <span data-show="vision"></span></p>
+			<p>boid vision <span data-show="vision"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -182,7 +194,7 @@
 				data-model="vision"
 			/>
 
-			<p>alignment force: <span data-show="alignment"></span></p>
+			<p>alignment force <span data-show="alignment"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -192,16 +204,17 @@
 			/>
 
 			<p>
-				alignment bias: <span data-show="bias"></span>
+				alignment bias
 				<span class="tooltip">
 					?
 					<span class="tip">
-						how much a boid will align towards other boids. values
-						greater than 1 mean that it will be biased towards other
-						boids facing the same direction, while values lower than
-						1 mean the opposite.
+						values greater than 1 cause boids to align more with
+						those facing the same direction, while values lower than
+						1 cause boids to align more with those facing different
+						directions.
 					</span>
 				</span>
+				<span data-show="bias"></span>
 			</p>
 			<input
 				type="range"
@@ -211,7 +224,7 @@
 				data-model="bias"
 			/>
 
-			<p>cohesion force: <span data-show="cohesion"></span></p>
+			<p>cohesion force <span data-show="cohesion"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -220,7 +233,7 @@
 				data-model="cohesion"
 			/>
 
-			<p>separation force: <span data-show="separation"></span></p>
+			<p>separation force <span data-show="separation"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -229,7 +242,7 @@
 				data-model="separation"
 			/>
 
-			<p>steering force: <span data-show="maxForce"></span></p>
+			<p>steering force <span data-show="maxForce"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -238,7 +251,7 @@
 				data-model="maxForce"
 			/>
 
-			<p>min speed: <span data-show="minSpeed"></span></p>
+			<p>min speed <span data-show="minSpeed"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -247,7 +260,7 @@
 				data-model="minSpeed"
 			/>
 
-			<p>max speed: <span data-show="maxSpeed"></span></p>
+			<p>max speed <span data-show="maxSpeed"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -256,7 +269,7 @@
 				data-model="maxSpeed"
 			/>
 
-			<p>drag: <span data-show="drag"></span></p>
+			<p>drag <span data-show="drag"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -265,7 +278,7 @@
 				data-model="drag"
 			/>
 
-			<p>movement randomness: <span data-show="noise"></span></p>
+			<p>movement randomness <span data-show="noise"></span></p>
 			<input
 				type="range"
 				min="0"
@@ -280,7 +293,7 @@
 			<label for="debug">show debug info</label>
 
 			<div id="debug-opts">
-				<p>fps: <span id="fps"></span></p>
+				<p>fps <span id="fps"></span></p>
 				<div>
 					<input type="checkbox" id="buckets" data-model="buckets" />
 					<label for="buckets"> show spatial subdivision</label>
@@ -296,14 +309,14 @@
 
 		<div class="popupwindow" id="popupwindow">
 			<div class="popup" id="export-popup">
-				<h3>export settings</h3>
+				<h2>export settings</h2>
 				<textarea id="exporter" cols="30" rows="10" readonly></textarea>
 				<button data-click="copy">copy</button>
 				<button data-click="leaveMenu" class="close">close</button>
 			</div>
 
 			<div class="popup" id="import-popup">
-				<h3>import settings</h3>
+				<h2>import settings</h2>
 				<textarea
 					placeholder="paste your exported settings here..."
 					id="importer"
