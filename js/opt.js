@@ -112,19 +112,30 @@ const opt = (() => {
 				const $min = select("[data-model=minSpeed]");
 				$min.max = data.maxSpeed;
 
-				if (data.maxSpeed <= data.minSpeed) $min.value = data.maxSpeed;
+				if (data.maxSpeed <= data.minSpeed) {
+					$min.value = data.maxSpeed;
+					data.minSpeed = data.maxSpeed;
+					updateShow($min, "minSpeed");
+				}
 			} else if (model === "accuracyPower") {
 				data.accuracy =
 					data.accuracyPower >= 10 ? 0 : 2 ** data.accuracyPower;
 
-				select(`[data-show=accuracy]`).textContent = Math.floor(
-					data.accuracy
-				);
+				select(`[data-show=accuracy]`).textContent = data.accuracy
+					? Math.floor(data.accuracy)
+					: "∞";
 				return;
 			} else if (model === "vision") g.shapeMode++;
 
-			select(`[data-show=${model}]`).textContent = data[model];
+			updateShow(el, model);
 		});
+	}
+
+	function updateShow(el, model) {
+		const digits = el.dataset.digits ? parseInt(el.dataset.digits) : 0;
+		console.log(digits);
+		select(`[data-show=${model}]`).textContent =
+			data[model].toFixed(digits);
 	}
 
 	function updateAll() {
@@ -138,9 +149,13 @@ const opt = (() => {
 			const model = el.dataset.model;
 			el.value = data[model];
 			if (model === "accuracyPower")
-				select(`[data-show=accuracy]`).textContent = data.accuracy;
-			else select(`[data-show=${model}]`).textContent = data[model];
+				select(`[data-show=accuracy]`).textContent = data.accuracy
+					? Math.floor(data.accuracy)
+					: "∞";
+			else updateShow(el, model);
 		}
+		const $min = select("[data-model=minSpeed]");
+		if ($min) $min.max = data.maxSpeed;
 		if (typeof g !== "undefined") g.shapeMode++;
 	}
 	updateAll();
