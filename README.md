@@ -1,6 +1,7 @@
 # boids
 
-![screenshot](readme/screenshot.png)
+Interactive 2D flocking simulation with many customizable parameters. [Demo online!](https://boids.dan.onl)
+
 ![screenshot with vision areas](readme/areas.png)
 
-Interactive 2D flocking simulation with many customizable parameters. [Demo online!](https://boids.dan.onl)
+![screenshot](readme/screenshot.png)
