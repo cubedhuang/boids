@@ -59,7 +59,7 @@ document.body.prepend(app.view);
 let flock = new Flock(opt.boids);
 
 function loop(delta) {
-	g.delta = delta;
+	g.delta = Math.min(delta, 2);
 
 	g.mouseForce = max(
 		(opt.maxSpeed *
