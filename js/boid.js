@@ -158,10 +158,8 @@ class Boid extends V2D {
 				this.y = constrain(this.y, 0, g.height);
 			}
 		} else {
-			if (this.x < 0) this.x = g.width;
-			if (this.x > g.width) this.x = 0;
-			if (this.y < 0) this.y = g.height;
-			if (this.y > g.height) this.y = 0;
+			this.x = ((this.x % g.width) + g.width) % g.width;
+			this.y = ((this.y % g.height) + g.height) % g.height;
 		}
 	}
 
